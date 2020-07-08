@@ -151,7 +151,6 @@ stages:
               displayName: "Docs.MS Release"
               condition: and(succeeded(), ne(variables['Skip.PublishDocs'], 'true'))
               environment: githubio
-              dependsOn: PublishPackage
 
               variables:
                 GHReviewersVariable: OwningGHUser
@@ -189,7 +188,7 @@ stages:
                             --kusto-url-var KUSTO_URL `
                             --kusto-database-var KUSTO_DB `
                             --kusto-table-var KUSTO_TABLE `
-                            --identity "$(OwningGHUser)"
+                            --identity "$(Build.QueuedBy)"
                           $resolvedIdentity = $result | ConvertTo-Json
 
                           Write-Host $resolvedIdentity
