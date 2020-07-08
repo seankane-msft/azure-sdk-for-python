@@ -58,4 +58,5 @@ steps:
     BaseBranchName: smoke-test
     WorkingDirectory: ${{ parameters.WorkingDirectory }}/repo
     ScriptDirectory: ${{ parameters.WorkingDirectory }}/${{ parameters.ScriptDirectory }}
-    GithubReviewer: ${{ parameters.GithubReviewer }}
+    GHReviewersVariable: ${{ parameters.GHReviewersVariable }}
+    GHTeamReviewersVariable: ${{ parameters.GHTeamReviewersVariable }} 
