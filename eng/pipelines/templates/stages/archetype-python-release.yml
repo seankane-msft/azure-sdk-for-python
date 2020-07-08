@@ -189,7 +189,7 @@ stages:
                             --kusto-database-var KUSTO_DB `
                             --kusto-table-var KUSTO_TABLE `
                             --identity "$(Build.QueuedBy)"
-                          $resolvedIdentity = $result | ConvertTo-Json
+                          $resolvedIdentity = $result[-1] | ConvertTo-Json
 
                           Write-Host $resolvedIdentity
 
