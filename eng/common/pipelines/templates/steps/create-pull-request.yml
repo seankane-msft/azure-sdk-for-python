@@ -79,4 +79,4 @@ steps:
       -AuthToken "$(azuresdk-github-pat)"
       -GitHubUsers "variables['${{ parameters.GHReviewersVariable }}']"
       -GitHubTeams "variables['${{ parameters.GHTeamReviewersVariable }}']"
-      -PRNumber "variables['Submitted.PullRequest.Number']"
+      -PRNumber "$(Submitted.PullRequest.Number)"
