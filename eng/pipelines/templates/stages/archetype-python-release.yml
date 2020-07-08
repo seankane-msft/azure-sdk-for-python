@@ -181,7 +181,7 @@ stages:
                         displayName: Get Appropriate Build Tools
 
                       - pwsh: |
-                          $result = dotnet run -- `
+                          $result = dotnet run -v q -- `
                             --aad-app-id-var APP_ID `
                             --aad-app-secret-var APP_SECRET `
                             --aad-tenant-var AAD_TENANT `
