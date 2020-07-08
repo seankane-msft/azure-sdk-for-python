@@ -152,9 +152,6 @@ stages:
               condition: and(succeeded(), ne(variables['Skip.PublishDocs'], 'true'))
               environment: githubio
 
-              variables:
-                GHReviewersVariable: OwningGHUser
-
               pool:
                 vmImage: ubuntu-18.04
 
@@ -189,11 +186,11 @@ stages:
                             --kusto-database-var KUSTO_DB `
                             --kusto-table-var KUSTO_TABLE `
                             --identity "$(Build.QueuedBy)"
-                          $resolvedIdentity = $result[-1] | ConvertTo-Json
+                          $resolvedIdentity = $result[-1] | ConvertFrom-Json
 
                           Write-Host $resolvedIdentity
 
-                          Write-Output "##vso[task.setvariable variable=$(GHReviewersVariable)]$resolvedIdentity.GithubUserName"
+                          Write-Output "##vso[task.setvariable variable=OwningGHUser]$($resolvedIdentity.GithubUserName)"
                         displayName: 'Run Identity Resolver'
                         workingDirectory: $(Build.SourcesDirectory)/tools_repo/tools/notification-configuration/identity-resolver
                         env:
@@ -219,7 +216,7 @@ stages:
                           Language: 'python'
                           ServiceDirectory: ${{ parameters.ServiceDirectory }}
                           DocRepoDestinationPath: 'docs-ref-services/' 
-                          GHReviewersVariable: $(GHReviewersVariable)
+                          GHReviewersVariable: 'OwningGHUser'
 
           - ${{if ne(artifact.options.skipUpdatePackageVersion, 'true')}}:
             - deployment: UpdatePackageVersion
