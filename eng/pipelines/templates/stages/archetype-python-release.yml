@@ -171,7 +171,7 @@ stages:
                         workingDirectory: $(Pipeline.Workspace)
                         displayName: Output Visible Artifacts
 
-                      - template: /eng/common/pipelines/templates/steps/get-queuing-user.yml
+                      - template: /eng/common/pipelines/templates/steps/get-pr-owners.yml
                         parameters:
                           TargetVariable: "OwningGHUser"
                           ServiceDirectory: ${{parameters.ServiceDirectory}}
