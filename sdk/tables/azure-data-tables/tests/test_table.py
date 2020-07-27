@@ -9,6 +9,7 @@ import pytest
 import sys
 import locale
 import os
+import functools
 from azure.data.tables import TableServiceClient
 from datetime import (
     datetime,
@@ -25,6 +26,7 @@ from azure.core.pipeline.policies import (
 )
 
 from _shared.testcase import TableTestCase, GlobalStorageAccountPreparer
+from _shared.testcase import StorageClientPreparer as _StorageClientPreparer
 from azure.data.tables._shared.authentication import SharedKeyCredentialPolicy
 from azure.core.pipeline.transport import RequestsTransport
 from azure.core.exceptions import (
@@ -37,6 +39,8 @@ from azure.data.tables._shared.table_shared_access_signature import generate_acc
 
 TEST_TABLE_PREFIX = 'pytablesync'
 
+# pre-apply the client_cls positional argument so it needn't be explicitly passed below
+StorageClientPreparer = functools.partial(_StorageClientPreparer, TableServiceClient)
 
 # ------------------------------------------------------------------------------
 
@@ -79,6 +83,7 @@ class StorageTableTest(TableTestCase):
     # --Test cases for tables --------------------------------------------------
     @pytest.mark.skip("pending")
     @GlobalStorageAccountPreparer()
+    @StorageClientPreparer()
     def test_create_properties(self, resource_group, location, storage_account, storage_account_key):
         # # Arrange
         ts = TableServiceClient(self.account_url(storage_account, "table"), storage_account_key)
@@ -105,6 +110,7 @@ class StorageTableTest(TableTestCase):
 
     # @pytest.mark.skip("pending")
     @GlobalStorageAccountPreparer()
+    @StorageClientPreparer()
     def test_create_table(self, resource_group, location, storage_account, storage_account_key):
         # # Arrange
         ts = TableServiceClient(self.account_url(storage_account, "table"), storage_account_key)
@@ -120,6 +126,7 @@ class StorageTableTest(TableTestCase):
 
     # @pytest.mark.skip("pending")
     @GlobalStorageAccountPreparer()
+    @StorageClientPreparer()
     def test_create_table_fail_on_exist(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         ts = TableServiceClient(self.account_url(storage_account, "table"), storage_account_key)
@@ -138,6 +145,7 @@ class StorageTableTest(TableTestCase):
         ts.delete_table(table_name)
 
     @GlobalStorageAccountPreparer()
+    @StorageClientPreparer()
     def test_create_table_invalid_name(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         ts = TableServiceClient(self.account_url(storage_account, "table"), storage_account_key)
@@ -150,6 +158,7 @@ class StorageTableTest(TableTestCase):
             excinfo)
 
     @GlobalStorageAccountPreparer()
+    @StorageClientPreparer()
     def test_delete_table_invalid_name(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         ts = TableServiceClient(self.account_url(storage_account, "table"), storage_account_key)
@@ -163,6 +172,7 @@ class StorageTableTest(TableTestCase):
 
     # @pytest.mark.skip("pending")
     @GlobalStorageAccountPreparer()
+    @StorageClientPreparer()
     def test_query_tables(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         ts = TableServiceClient(self.account_url(storage_account, "table"), storage_account_key)
@@ -180,6 +190,7 @@ class StorageTableTest(TableTestCase):
 
     # @pytest.mark.skip("pending")
     @GlobalStorageAccountPreparer()
+    @StorageClientPreparer()
     def test_query_tables_with_filter(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         ts = TableServiceClient(self.account_url(storage_account, "table"), storage_account_key)
@@ -197,6 +208,7 @@ class StorageTableTest(TableTestCase):
 
     # @pytest.mark.skip("pending")
     @GlobalStorageAccountPreparer()
+    @StorageClientPreparer()
     def test_query_tables_with_num_results(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         prefix = 'listtable'
@@ -221,6 +233,7 @@ class StorageTableTest(TableTestCase):
 
     # @pytest.mark.skip("pending")
     @GlobalStorageAccountPreparer()
+    @StorageClientPreparer()
     def test_query_tables_with_marker(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         ts = TableServiceClient(self.account_url(storage_account, "table"), storage_account_key)
@@ -248,6 +261,7 @@ class StorageTableTest(TableTestCase):
 
     # @pytest.mark.skip("pending")
     @GlobalStorageAccountPreparer()
+    @StorageClientPreparer()
     def test_delete_table_with_existing_table(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         ts = TableServiceClient(self.account_url(storage_account, "table"), storage_account_key)
@@ -264,6 +278,7 @@ class StorageTableTest(TableTestCase):
 
     # @pytest.mark.skip("pending")
     @GlobalStorageAccountPreparer()
+    @StorageClientPreparer()
     def test_delete_table_with_non_existing_table_fail_not_exist(self, resource_group, location, storage_account,
                                                                  storage_account_key):
         # Arrange
@@ -278,6 +293,7 @@ class StorageTableTest(TableTestCase):
 
     @pytest.mark.skip("pending")
     @GlobalStorageAccountPreparer()
+    @StorageClientPreparer()
     def test_unicode_create_table_unicode_name(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         url = self.account_url(storage_account, "table")
@@ -295,6 +311,7 @@ class StorageTableTest(TableTestCase):
 
     # @pytest.mark.skip("pending")
     @GlobalStorageAccountPreparer()
+    @StorageClientPreparer()
     def test_get_table_acl(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         url = self.account_url(storage_account, "table")
@@ -316,6 +333,7 @@ class StorageTableTest(TableTestCase):
 
     # @pytest.mark.skip("pending")
     @GlobalStorageAccountPreparer()
+    @StorageClientPreparer()
     def test_set_table_acl_with_empty_signed_identifiers(self, resource_group, location, storage_account,
                                                          storage_account_key):
         # Arrange
@@ -338,6 +356,7 @@ class StorageTableTest(TableTestCase):
 
     @pytest.mark.skip("pending")
     @GlobalStorageAccountPreparer()
+    @StorageClientPreparer()
     def test_set_table_acl_with_empty_signed_identifier(self, resource_group, location, storage_account,
                                                         storage_account_key):
         # Arrange
@@ -363,6 +382,7 @@ class StorageTableTest(TableTestCase):
 
     # @pytest.mark.skip("pending")
     @GlobalStorageAccountPreparer()
+    @StorageClientPreparer()
     def test_set_table_acl_with_signed_identifiers(self, resource_group, location, storage_account,
                                                    storage_account_key):
         # Arrange
@@ -391,6 +411,7 @@ class StorageTableTest(TableTestCase):
 
     # @pytest.mark.skip("pending")
     @GlobalStorageAccountPreparer()
+    @StorageClientPreparer()
     def test_set_table_acl_too_many_ids(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         url = self.account_url(storage_account, "table")
@@ -413,6 +434,7 @@ class StorageTableTest(TableTestCase):
     # @pytest.mark.skip("pending")
     @pytest.mark.live_test_only
     @GlobalStorageAccountPreparer()
+    @StorageClientPreparer()
     def test_account_sas(self, resource_group, location, storage_account, storage_account_key):
         # SAS URL is calculated from storage key, so this test runs live only
 
@@ -459,6 +481,7 @@ class StorageTableTest(TableTestCase):
 
     @pytest.mark.skip("msrest fails deserialization: https://github.com/Azure/msrest-for-python/issues/192")
     @GlobalStorageAccountPreparer()
+    @StorageClientPreparer()
     def test_locale(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         ts = TableServiceClient(self.account_url(storage_account, "table"), storage_account_key)

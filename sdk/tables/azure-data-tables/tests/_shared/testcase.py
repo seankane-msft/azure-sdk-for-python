@@ -15,6 +15,7 @@ from datetime import datetime, timedelta
 
 from azure.data.tables import ResourceTypes, AccountSasPermissions
 from azure.data.tables._shared.table_shared_access_signature import generate_account_sas
+from azure.core.credentials import AzureKeyCredential
 
 try:
     import unittest.mock as mock
@@ -108,6 +109,35 @@ class GlobalStorageAccountPreparer(AzureMgmtPreparer):
             'storage_account_key': TableTestCase._STORAGE_KEY,
             'storage_account_cs': TableTestCase._STORAGE_CONNECTION_STRING,
         }
+
+class StorageClientPreparer(AzureMgmtPreparer):
+    def __init__(self, client_cls, client_kwargs={}, **kwargs):
+        super(StorageClientPreparer, self).__init__(
+            name_prefix='',
+            random_name_length=42
+        )
+        self.client_kwargs = client_kwargs
+        self.client_cls = client_cls
+
+    def create_resource(self, name, **kwargs):
+        client = self.create_storage_client(**kwargs)
+        return {"client": client}
+
+    def create_storage_client(self, **kwargs):
+        storage_account = self.client_kwargs.pop("storage_account", None)
+        if storage_account is None:
+            storage_account = kwargs.pop("storage_account")
+
+        storage_account_key = self.client_kwargs.pop("storage_account_key", None)
+        if storage_account_key is None:
+            storage_account_key = kwargs.pop("storage_account_key")
+
+        return self.client_cls(
+            storage_account,
+            AzureKeyCredential(storage_account_key),
+            **self.client_kwargs       
+        )
+
 
 class GlobalResourceGroupPreparer(AzureMgmtPreparer):
     def __init__(self):
