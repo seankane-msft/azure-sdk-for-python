@@ -71,7 +71,13 @@ class AccessPolicy(GenAccessPolicy):
     :type start: ~datetime.datetime or str
     """
 
-    def __init__(self, permission=None, expiry=None, start=None, **kwargs):  # pylint:disable=W0231
+    def __init__(
+        self, 
+        permission=None, # type: str
+        expiry=None,  # type: Union[datetime.datetime, str
+        start=None, # type: Union[datetime.datetime, str]
+        **kwargs # type: Any
+    ):  # type: (...) - > None
         self.start = start
         self.expiry = expiry
         self.permission = permission

@@ -70,7 +70,9 @@ class TableServiceClient(TableServiceClientBase):
         return cls(account_url, credential=credential, **kwargs)
 
     @distributed_trace
-    def get_service_stats(self, **kwargs):
+    def get_service_stats(
+            self, **kwargs # type: Any
+    ):
         # type: (...) -> dict[str,object]
         """Retrieves statistics related to replication for the Table service. It is only available on the secondary
         location endpoint when read-access geo-redundant replication is enabled for the account.
@@ -88,7 +90,9 @@ class TableServiceClient(TableServiceClientBase):
             process_table_error(error)
 
     @distributed_trace
-    def get_service_properties(self, **kwargs):
+    def get_service_properties(
+            self, **kwargs # type: Any
+    ):
         # type: (...) -> dict[str,Any]
         """Gets the properties of an account's Table service,
         including properties for Analytics and CORS (Cross-Origin Resource Sharing) rules.
@@ -179,7 +183,7 @@ class TableServiceClient(TableServiceClientBase):
     @distributed_trace
     def query_tables(
             self,
-            filter,  # pylint: disable=W0622
+            filter,  # type: str
             **kwargs  # type: Any
     ):
         # type: (...) -> ItemPaged[Table]
@@ -238,8 +242,11 @@ class TableServiceClient(TableServiceClientBase):
             page_iterator_class=TablePropertiesPaged
         )
 
-    def get_table_client(self, table_name, **kwargs):
-        # type: (Union[TableProperties, str], Optional[Any]) -> TableClient
+    def get_table_client(
+            self, table_name, # type: Union[TableProperties, str]
+            **kwargs # type: Any
+    ):
+        # type: (...) -> TableClient
         """Get a client to interact with the specified table.
 
        The table need not already exist.

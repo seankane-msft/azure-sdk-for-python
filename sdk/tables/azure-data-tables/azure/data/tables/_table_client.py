@@ -88,8 +88,12 @@ class TableClient(TableClientBase):
         return cls(account_url, table_name=table_name, credential=credential, **kwargs)  # type: ignore
 
     @classmethod
-    def from_table_url(cls, table_url, credential=None, **kwargs):
-        # type: (str, Optional[Any], Any) -> TableClient
+    def from_table_url(
+            cls, table_url, # type: str
+            credential=None, # type: Optional[Any]
+            **kwargs # type: Any
+    ):
+        # type: (...) -> TableClient
         """A client to interact with a specific Table.
 
         :param table_url: The full URI to the table, including SAS token if used.
@@ -154,7 +158,8 @@ class TableClient(TableClientBase):
     def set_table_access_policy(
             self,
             signed_identifiers,  # type: dict[str,AccessPolicy]
-            **kwargs):
+            **kwargs # type: Any
+    ):
         # type: (...) -> None
         """Sets stored access policies for the table that may be used with Shared Access Signatures.
 
@@ -361,7 +366,7 @@ class TableClient(TableClientBase):
     def query_entities(
             self,
             filter,  # type: str  # pylint: disable = W0622
-            **kwargs
+            **kwargs # type: Any
     ):
         # type: (...) -> ItemPaged[TableEntity]
         """Lists entities in a table.
