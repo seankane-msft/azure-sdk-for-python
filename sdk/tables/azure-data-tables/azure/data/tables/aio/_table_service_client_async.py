@@ -87,7 +87,9 @@ class TableServiceClient(AsyncStorageAccountHostsMixin, TableServiceClientBase):
         self._loop = loop
 
     @distributed_trace_async
-    async def get_service_stats(self, **kwargs):
+    async def get_service_stats(
+            self, **kwargs # type: Any
+    ):
         # type: (...) -> dict[str,object]
         """Retrieves statistics related to replication for the Table service. It is only available on the secondary
         location endpoint when read-access geo-redundant replication is enabled for the account.
@@ -106,7 +108,9 @@ class TableServiceClient(AsyncStorageAccountHostsMixin, TableServiceClientBase):
             process_table_error(error)
 
     @distributed_trace_async
-    async def get_service_properties(self, **kwargs):
+    async def get_service_properties(
+            self, **kwargs # type: Any
+    ):
         # type: (...) -> dict[str,Any]
         """Gets the properties of an account's Table service,
         including properties for Analytics and CORS (Cross-Origin Resource Sharing) rules.

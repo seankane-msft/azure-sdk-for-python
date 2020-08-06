@@ -20,12 +20,15 @@ class TableEntity(dict):
     """
 
     def _set_metadata(self):
+        # type: (...) - > None
         if 'Timestamp' in self.keys():
             self._metadata = {'etag': self.pop('etag'), "timestamp": self.pop('Timestamp')}  # pylint:disable=W0201
         else:
             self._metadata = {'etag': self.pop('etag')}  # pylint:disable=W0201
 
-    def metadata(self, **kwargs):  # pylint: disable = W0613
+    def metadata(
+            self, **kwargs # type: Any   # pylint: disable = W0613
+    ):
         # type: (...) -> Dict[str,Any]
         """Resets metadata to be a part of the entity
         :return Dict of entity metadata
@@ -33,7 +36,9 @@ class TableEntity(dict):
         """
         return self._metadata
 
-    def __getattr__(self, name):
+    def __getattr__(
+            self, name # type: str
+    ):
         """
         :param name:name of entity entry
         :type name: str
@@ -47,7 +52,9 @@ class TableEntity(dict):
 
     __setattr__ = dict.__setitem__
 
-    def __delattr__(self, name):
+    def __delattr__(
+            self, name # type: str
+    ):
         """
         :param name:name of entity entry
         :type name: str
@@ -59,6 +66,7 @@ class TableEntity(dict):
             raise AttributeError(_ERROR_ATTRIBUTE_MISSING.format('TableEntity', name))
 
     def __dir__(self):
+        # type: (...) - > None
         return dir({}) + list(self.keys())
 
 
@@ -75,9 +83,9 @@ class EntityProperty(object):
     """
 
     def __init__(self,
-                 type=None,  # type: Union[str,EdmType] # pylint:disable=W0622
-                 value=None  # type: Any
-                 ):
+            type=None,  # type: Union[str,EdmType] # pylint:disable=W0622
+            value=None  # type: Any
+    ): # (...) -> None
         """
         Represents an Azure Table. Returned by list_tables.
 

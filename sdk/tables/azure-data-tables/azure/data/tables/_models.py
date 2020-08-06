@@ -71,8 +71,8 @@ class AccessPolicy(GenAccessPolicy):
     :type start: ~datetime.datetime or str
     """
 
-    def __init__(
-        self, 
+    def __init__( # pylint: disable=super-init-not-called
+        self,
         permission=None, # type: str
         expiry=None,  # type: Union[datetime.datetime, str
         start=None, # type: Union[datetime.datetime, str]

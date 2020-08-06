@@ -183,7 +183,7 @@ class TableServiceClient(TableServiceClientBase):
     @distributed_trace
     def query_tables(
             self,
-            filter,  # type: str
+            filter,  # type: str pylint: disable=redefined-builtin
             **kwargs  # type: Any
     ):
         # type: (...) -> ItemPaged[Table]
