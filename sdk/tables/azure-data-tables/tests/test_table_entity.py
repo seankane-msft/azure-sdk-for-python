@@ -122,9 +122,7 @@ class StorageTableEntityTest(TableTestCase):
 
     def _insert_random_entity(self, pk=None, rk=None):
         entity = self._create_random_entity_dict(pk, rk)
-        # etag = self.table.create_item(entity, response_hook=lambda e, h: h['etag'])
-        e = self.table.create_entity(entity)
-        metadata = e.metadata()
+        metadata = self.table.create_entity(entity)
         return entity, metadata['etag']
 
     def _create_updated_entity_dict(self, partition, row):
@@ -207,7 +205,7 @@ class StorageTableEntityTest(TableTestCase):
         '''
         Asserts that the entity passed in matches the default entity.
         '''
-        self.assertEqual(entity['age'], '39')
+        self.assertEqual(entity['age'], 39)
         self.assertEqual(entity['sex'], 'male')
         self.assertEqual(entity['married'], True)
         self.assertEqual(entity['deceased'], False)
@@ -215,16 +213,14 @@ class StorageTableEntityTest(TableTestCase):
         self.assertFalse("aquarius" in entity)
         self.assertEqual(entity['ratio'], 3.1)
         self.assertEqual(entity['evenratio'], 3.0)
-        self.assertEqual(entity['large'], '933311100')
-        self.assertTrue(entity['Birthday'].startswith('1973-10-04T00:00:00'))
-        self.assertTrue(entity['birthday'].startswith('1970-10-04T00:00:00'))
-        self.assertTrue(entity['Birthday'].endswith('00Z'))
-        self.assertTrue(entity['birthday'].endswith('00Z'))
-        self.assertEqual(entity['binary'], b64encode(b'binary').decode('utf-8'))
+        self.assertEqual(entity['large'], 933311100)
+        self.assertEqual(entity['Birthday'], datetime(1973, 10, 4, tzinfo=tzutc()))
+        self.assertEqual(entity['birthday'], datetime(1970, 10, 4, tzinfo=tzutc()))
+        self.assertEqual(entity['binary'].value, b'binary')
         self.assertIsInstance(entity['other'], EntityProperty)
         self.assertEqual(entity['other'].type, EdmType.INT64)
         self.assertEqual(entity['other'].value, 20)
-        self.assertEqual(entity['clsid'], 'c9da6455-213d-42c9-9a79-3e9149a57833')
+        self.assertEqual(entity['clsid'], uuid.UUID('c9da6455-213d-42c9-9a79-3e9149a57833'))
         # self.assertIsNone(entity.odata)
         # self.assertIsNotNone(entity.Timestamp)
 
@@ -326,7 +322,7 @@ class StorageTableEntityTest(TableTestCase):
             # resp = self.table.create_item(entity)
             resp = self.table.create_entity(entity=entity)
 
-            # Assert  --- Does this mean insert returns nothing?
+            # Assert
             self.assertIsNotNone(resp)
         finally:
             self._tear_down()
@@ -364,9 +360,11 @@ class StorageTableEntityTest(TableTestCase):
                 headers={'Accept': 'application/json;odata=nometadata'},
             )
 
+            received_entity = self.table.get_entity(partition_key=entity["PartitionKey"], row_key=entity["RowKey"])
+
             # Assert
             self.assertIsNotNone(resp)
-            self._assert_default_entity_json_no_metadata(resp)
+            self._assert_default_entity_json_no_metadata(received_entity)
         finally:
             self._tear_down()
 
@@ -482,7 +480,7 @@ class StorageTableEntityTest(TableTestCase):
                 resp = self.table.create_entity(entity=entity)
 
                 # Assert
-            #  self.assertIsNone(resp)
+                self.assertIsNone(resp)
         finally:
             self._tear_down()
 
@@ -763,10 +761,10 @@ class StorageTableEntityTest(TableTestCase):
             # Act
             sent_entity = self._create_updated_entity_dict(entity.PartitionKey, entity.RowKey)
             # , response_hook=lambda e, h: h)
-            self.table.update_entity(
+            metadata = self.table.update_entity(
                 mode=UpdateMode.REPLACE, entity=sent_entity, etag=etag,
                 match_condition=MatchConditions.IfNotModified)
-
+            print(metadata)
             # Assert
             # self.assertTrue(resp)
             received_entity = self.table.get_entity(entity.PartitionKey, entity.RowKey)
@@ -809,7 +807,7 @@ class StorageTableEntityTest(TableTestCase):
             resp = self.table.upsert_entity(mode=UpdateMode.MERGE, entity=sent_entity)
 
             # Assert
-            self.assertIsNone(resp)
+            self.assertIsNotNone(resp)
             received_entity = self.table.get_entity(entity.PartitionKey, entity.RowKey)
             self._assert_merged_entity(received_entity)
         finally:
@@ -829,7 +827,7 @@ class StorageTableEntityTest(TableTestCase):
             resp = self.table.upsert_entity(mode=UpdateMode.MERGE, entity=sent_entity)
 
             # Assert
-            self.assertIsNone(resp)
+            self.assertIsNotNone(resp)
             received_entity = self.table.get_entity(entity['PartitionKey'],
                                                     entity['RowKey'])
             self._assert_updated_entity(received_entity)
@@ -870,7 +868,7 @@ class StorageTableEntityTest(TableTestCase):
             resp = self.table.upsert_entity(mode=UpdateMode.REPLACE, entity=sent_entity)
 
             # Assert
-            self.assertIsNone(resp)
+            self.assertIsNotNone(resp)
             received_entity = self.table.get_entity(entity['PartitionKey'],
                                                     entity['RowKey'])
             self._assert_updated_entity(received_entity)
@@ -890,7 +888,7 @@ class StorageTableEntityTest(TableTestCase):
             resp = self.table.update_entity(mode=UpdateMode.MERGE, entity=sent_entity)
 
             # Assert
-            self.assertIsNone(resp)
+            self.assertIsNotNone(resp)
             received_entity = self.table.get_entity(entity.PartitionKey, entity.RowKey)
             self._assert_merged_entity(received_entity)
         finally:
@@ -930,7 +928,7 @@ class StorageTableEntityTest(TableTestCase):
                 match_condition=MatchConditions.IfNotModified)
 
             # Assert
-            self.assertIsNone(resp)
+            self.assertIsNotNone(resp)
             received_entity = self.table.get_entity(entity.PartitionKey, entity.RowKey)
             self._assert_merged_entity(received_entity)
         finally:
@@ -1096,7 +1094,7 @@ class StorageTableEntityTest(TableTestCase):
             resp = self.table.upsert_entity(mode=UpdateMode.MERGE, entity=sent_entity)
 
             # Assert
-            self.assertIsNone(resp)
+            self.assertIsNotNone(resp)
             # row key here only has 2 quotes
             received_entity = self.table.get_entity(entity.PartitionKey, entity.RowKey)
             self._assert_updated_entity(received_entity)
@@ -1106,7 +1104,7 @@ class StorageTableEntityTest(TableTestCase):
             resp = self.table.update_entity(mode=UpdateMode.MERGE, entity=sent_entity)
 
             # Assert
-            self.assertIsNone(resp)
+            self.assertIsNotNone(resp)
             received_entity = self.table.get_entity(entity.PartitionKey, entity.RowKey)
             self._assert_updated_entity(received_entity)
             self.assertEqual(received_entity['newField'], 'newFieldValue')
@@ -1167,7 +1165,7 @@ class StorageTableEntityTest(TableTestCase):
             entity = self._create_random_base_entity_dict()
             entity.update({'NoneValue': None})
 
-            # Act       
+            # Act
             self.table.create_entity(entity=entity)
             resp = self.table.get_entity(entity['PartitionKey'], entity['RowKey'])
 
@@ -1187,7 +1185,7 @@ class StorageTableEntityTest(TableTestCase):
             entity = self._create_random_base_entity_dict()
             entity.update({'binary': b'\x01\x02\x03\x04\x05\x06\x07\x08\t\n'})
 
-            # Act  
+            # Act
             self.table.create_entity(entity=entity)
             resp = self.table.get_entity(entity['PartitionKey'], entity['RowKey'])
 
@@ -1281,11 +1279,16 @@ class StorageTableEntityTest(TableTestCase):
             table = self._create_query_table(2)
 
             # Act
+            # TODO: the return types on this are different than if it used query_entities
             entities = list(table.list_entities(headers={'accept': 'application/json;odata=nometadata'}))
+            entities = list(table.query_entities(
+                filter="PartitionKey eq {}".format(entities[0]["PartitionKey"]),
+                headers={'accept': 'application/json;odata=nometadata'}))
 
             # Assert
             self.assertEqual(len(entities), 2)
             for entity in entities:
+                print(entity)
                 self._assert_default_entity_json_no_metadata(entity)
         finally:
             self._tear_down()
@@ -1405,6 +1408,7 @@ class StorageTableEntityTest(TableTestCase):
             self.assertEqual(len(entities1), 2)
             self.assertEqual(len(entities2), 2)
             self.assertEqual(len(entities3), 1)
+            print(entities1[0])
             self._assert_default_entity(entities1[0])
             self._assert_default_entity(entities1[1])
             self._assert_default_entity(entities2[0])

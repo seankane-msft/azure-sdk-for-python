@@ -15,16 +15,16 @@ from datetime import (
     timedelta,
 )
 
-    
+
 from azure.data.tables import (
-    ResourceTypes, 
-    AccountSasPermissions, 
-    TableSasPermissions, 
-    CorsRule, 
-    RetentionPolicy, 
-    UpdateMode, 
-    AccessPolicy, 
-    TableAnalyticsLogging, 
+    ResourceTypes,
+    AccountSasPermissions,
+    TableSasPermissions,
+    CorsRule,
+    RetentionPolicy,
+    UpdateMode,
+    AccessPolicy,
+    TableAnalyticsLogging,
     Metrics
 )
 from azure.core.pipeline import Pipeline
@@ -137,6 +137,7 @@ class StorageTableTest(TableTestCase):
 
         # Act
         created = ts.create_table(table_name)
+        print(created)
         with self.assertRaises(ResourceExistsError):
             ts.create_table(table_name)
 

@@ -160,7 +160,7 @@ def _convert_to_entity(entry_element):
 
         # Add type for Int32
         if type(value) is int:  # pylint:disable=C0123
-            mtype = EdmType.INT32
+            mtype = EdmType.INT64
 
         # no type info, property should parse automatically
         if not mtype:
