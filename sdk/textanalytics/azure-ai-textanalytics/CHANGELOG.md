@@ -1,6 +1,14 @@
 # Release History
 
-## 5.1.0b1 (Unreleased)
+## 5.1.0b2 (unreleased)
+
+**Breaking changes**
+- Removed property `length` from `CategorizedEntity`, `SentenceSentiment`, `LinkedEntityMatch`, `AspectSentiment`, `OpinionSentiment`, and `PiiEntity`.
+To get the length of the text in these models, just call `len()` on the `text` property.
+- When a parameter or endpoint is not compatible with the API version you specify, we will now return a `ValueError` instead of a `NotImplementedError`.
+- Client side validation of input is now disabled by default. This means there will be no `ValidationError`s thrown by the client SDK in the case of malformed input, the service will throw an error instead in an `HttpResponseError`
+
+## 5.1.0b1 (2020-09-17)
 
 **New features**
 - We are now targeting the service's v3.1-preview API as the default. If you would like to still use version v3.0 of the service,

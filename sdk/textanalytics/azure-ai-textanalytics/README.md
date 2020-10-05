@@ -83,7 +83,7 @@ or [Azure CLI][azure_cli_endpoint_lookup]:
 
 ```bash
 # Get the endpoint for the text analytics resource
-az cognitiveservices account show --name "resource-name" --resource-group "resource-group-name" --query "endpoint"
+az cognitiveservices account show --name "resource-name" --resource-group "resource-group-name" --query "properties.endpoint"
 ```
 
 #### Get the API Key
@@ -255,7 +255,6 @@ for doc in result:
         print("...Category: {}".format(entity.category))
         print("...Confidence Score: {}".format(entity.confidence_score))
         print("...Offset: {}".format(entity.offset))
-        print("...Length: {}".format(entity.length))
 ```
 
 The returned response is a heterogeneous list of result and error objects: list[[RecognizeEntitiesResult][recognize_entities_result], [DocumentError][document_error]]
@@ -295,7 +294,6 @@ for doc in result:
             print("......Entity match text: {}".format(match.text))
             print("......Confidence Score: {}".format(match.confidence_score))
             print("......Offset: {}".format(match.offset))
-            print("......Length: {}".format(match.length))
 ```
 
 The returned response is a heterogeneous list of result and error objects: list[[RecognizeLinkedEntitiesResult][recognize_linked_entities_result], [DocumentError][document_error]]
@@ -322,13 +320,14 @@ documents = [
 ]
 response = text_analytics_client.recognize_pii_entities(documents, language="en")
 result = [doc for doc in response if not doc.is_error]
-for doc in result:
+for idx, doc in enumerate(result):
+    print("Document text: {}".format(documents[idx]))
+    print("Redacted document text: {}".format(doc.redacted_text))
     for entity in doc.entities:
-        print("Entity: {}".format(entity.text))
-        print("...Category: {}".format(entity.category))
-        print("...Confidence Score: {}".format(entity.confidence_score))
-        print("...Offset: {}".format(entity.offset))
-        print("...Length: {}".format(entity.length))
+        print("...Entity: {}".format(entity.text))
+        print("......Category: {}".format(entity.category))
+        print("......Confidence Score: {}".format(entity.confidence_score))
+        print("......Offset: {}".format(entity.offset))
 ```
 
 The returned response is a heterogeneous list of result and error objects: list[[RecognizePiiEntitiesResult][recognize_pii_entities_result], [DocumentError][document_error]]
