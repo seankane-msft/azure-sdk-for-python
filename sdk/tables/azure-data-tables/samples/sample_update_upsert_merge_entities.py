@@ -42,7 +42,6 @@ class TableEntitySamples(object):
             'color': 'Purple',
             'price': '5'
         }
-        try:
             # [START create_entity]
             created_entity = table.create_entity(entity=my_entity)
             print("Created entity: {}".format(created_entity))
@@ -78,7 +77,7 @@ class TableEntitySamples(object):
             # Query the entities in the table
             entities = list(table.list_entities())
 
-            for entity, i in enumerate(entities):
+            for i, entity in enumerate(entities):
                 print("Entity #{}: {}".format(entity, i))
             # [END query_entities]
 
