@@ -1,0 +1,54 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-learnappconfig/0.0.1 Python/3.9.0rc1 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://sean-app-config-training.azconfig.io/kv/FontColor?api-version=1.0
+  response:
+    body:
+      string: '{"etag":"JKFYdehaw1p3DGj90G6tpAvFg4X","key":"FontColor","label":null,"content_type":null,"value":"\\033[31m","tags":{},"locked":false,"last_modified":"2020-10-05T22:16:45+00:00"}'
+    headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - DNT, X-CustomHeader, Keep-Alive, User-Agent, X-Requested-With, If-Modified-Since,
+        Cache-Control, Content-Type, Authorization, x-ms-client-request-id, x-ms-useragent,
+        x-ms-content-sha256, x-ms-date, host, Accept, Accept-Datetime, Date, If-Match,
+        If-None-Match, Sync-Token, x-ms-return-client-request-id, ETag, Last-Modified,
+        Link, Memento-Datetime, retry-after-ms, x-ms-request-id, WWW-Authenticate
+      connection:
+      - keep-alive
+      content-length:
+      - '178'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 13 Oct 2020 23:03:46 GMT
+      etag:
+      - W/"JKFYdehaw1p3DGj90G6tpAvFg4X"
+      last-modified:
+      - Mon, 05 Oct 2020 22:16:45 GMT
+      server:
+      - openresty/1.17.8.2
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      sync-token:
+      - zAJw6V16=NDo0IzI3MDYyOTQjNz02ODQ0NTg=;sn=2706294
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+    status:
+      code: 200
+      message: OK
+version: 1
