@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
 #--------------------------------------------------------------------------
+import functools
 import inspect
 import os.path
 import sys
@@ -12,6 +13,12 @@ try:
 except ImportError:
     from inspect import getargspec as get_arg_spec
 
+try:
+    import asyncio
+except ImportError:
+    # Python2, there should not be any async tests to call await_prepared_test
+    pass
+
 import pytest
 
 from azure_devtools.scenario_tests import (
@@ -20,6 +27,7 @@ from azure_devtools.scenario_tests import (
     AuthenticationMetadataFilter, OAuthRequestResponsesFilter
 )
 from azure_devtools.scenario_tests.config import TestConfig
+from azure_devtools.scenario_tests.utilities import trim_kwargs_from_test_function
 
 from .config import TEST_SETTING_FILENAME
 from . import mgmt_settings_fake as fake_settings
@@ -188,10 +196,15 @@ class AzureTestCase(ReplayableTest):
         client_id = os.environ.get("AZURE_CLIENT_ID", None)
         secret = os.environ.get("AZURE_CLIENT_SECRET", None)
 
+        is_async = kwargs.pop("async_test", False)
+
         if tenant_id and client_id and secret and self.is_live:
             if _is_autorest_v3(client_class):
                 # Create azure-identity class
                 from azure.identity import ClientSecretCredential
+                if is_async:
+                    from azure.identity.aio import ClientSecretCredential
+
                 credentials = ClientSecretCredential(
                     tenant_id=tenant_id,
                     client_id=client_id,
@@ -207,7 +220,8 @@ class AzureTestCase(ReplayableTest):
                 )
         else:
             if _is_autorest_v3(client_class):
-                credentials = self.settings.get_azure_core_credentials()
+                credentials = self.AsyncFakeCredential()
+                #credentials = self.settings.get_azure_core_credentials()
             else:
                 credentials = self.settings.get_credentials()
 
@@ -262,3 +276,17 @@ class AzureTestCase(ReplayableTest):
         If prefix is a blank string, use the fully qualified test name instead.
         This is what legacy tests do for resource groups."""
         return self.get_resource_name(prefix or self.qualified_test_name.replace('.', '_'))
+
+    @staticmethod
+    def await_prepared_test(test_fn):
+        """Synchronous wrapper for async test methods. Used to avoid making changes
+        upstream to AbstractPreparer (which doesn't await the functions it wraps)
+        """
+
+        @functools.wraps(test_fn)
+        def run(test_class_instance, *args, **kwargs):
+            trim_kwargs_from_test_function(test_fn, kwargs)
+            loop = asyncio.get_event_loop()
+            return loop.run_until_complete(test_fn(test_class_instance, **kwargs))
+
+        return run

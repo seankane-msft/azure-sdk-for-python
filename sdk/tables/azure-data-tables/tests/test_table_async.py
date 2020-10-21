@@ -4,7 +4,7 @@ import sys
 from datetime import datetime, timedelta
 
 import pytest
-from devtools_testutils import CachedResourceGroupPreparer, CachedStorageAccountPreparer
+from devtools_testutils import CachedResourceGroupPreparer, CachedStorageAccountPreparer, AzureTestCase
 from azure.core.exceptions import ResourceNotFoundError, ResourceExistsError, HttpResponseError
 from _shared.asynctestcase import AsyncTableTestCase
 from _shared.testcase import GlobalStorageAccountPreparer
@@ -51,13 +51,24 @@ class TableTestAsync(AsyncTableTestCase):
         except ResourceNotFoundError:
             pass
 
+    def create_service_client(self, storage_account, account_key):
+        account_url = self.account_url(storage_account, "table")
+        return self.create_basic_client(
+            TableServiceClient,
+            account_url=account_url,
+            # credential=account_key,
+            async_test=True
+        )
+
     # --Test cases for tables --------------------------------------------------
     # @pytest.mark.skip("pending")
+    @AzureTestCase.await_prepared_test
     @CachedResourceGroupPreparer(name_prefix="tablestest")
     @CachedStorageAccountPreparer(name_prefix="tablestest")
-    async def test_create_table(self, resource_group, location, storage_account, storage_account_key):
+    async def test_create_table_unique(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
-        ts = TableServiceClient(self.account_url(storage_account, "table"), storage_account_key)
+        # ts = TableServiceClient(self.account_url(storage_account, "table"), storage_account_key)
+        ts = self.create_service_client(storage_account, storage_account_key)
         table_name = self._get_table_reference()
 
         # Act

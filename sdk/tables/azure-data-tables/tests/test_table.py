@@ -86,6 +86,14 @@ class StorageTableTest(TableTestCase):
         except ResourceNotFoundError:
             pass
 
+    def create_service_client(self, storage_account, account_key):
+        account_url = self.account_url(storage_account, "table")
+        return self.create_basic_client(
+            TableServiceClient,
+            account_url=account_url
+            # credential=account_key
+        )
+
     # --Test cases for tables --------------------------------------------------
     @pytest.mark.skip("pending")
     @CachedResourceGroupPreparer(name_prefix="tablestest")
@@ -113,9 +121,10 @@ class StorageTableTest(TableTestCase):
 
     @CachedResourceGroupPreparer(name_prefix="tablestest")
     @CachedStorageAccountPreparer(name_prefix="tablestest")
-    def test_create_table(self, resource_group, location, storage_account, storage_account_key):
+    def test_create_table_unique(self, resource_group, location, storage_account, storage_account_key):
         # # Arrange
-        ts = TableServiceClient(self.account_url(storage_account, "table"), storage_account_key)
+        # ts = TableServiceClient(self.account_url(storage_account, "table"), storage_account_key)
+        ts = self.create_service_client(storage_account, storage_account_key)
 
         table_name = self._get_table_reference()
 
