@@ -61,7 +61,7 @@ def _create_pipeline(account, credential, **kwargs):
     return Pipeline(transport, policies=policies)
 
 
-class StorageTableTest(TableTestCase):
+class TestStorageTable(TableTestCase):
 
     # --Helpers-----------------------------------------------------------------
     def _get_table_reference(self, prefix=TEST_TABLE_PREFIX):
