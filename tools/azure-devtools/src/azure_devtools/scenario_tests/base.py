@@ -27,6 +27,12 @@ class IntegrationTestBase(object):
         self.diagnose = os.environ.get(ENV_TEST_DIAGNOSE, None) == 'True'
         self.logger = logging.getLogger('azure_devtools.scenario_tests')
 
+    @pytest.fixture(scope="session")
+    def initialize(self):
+        # pytest won't collect tests with a __init__ method so this is a temporary workaroudn
+        self.diagnose = os.environ.get(ENV_TEST_DIAGNOSE, None) == 'True'
+        self.logger = logging.getLogger('azure_devtools.scenario_tests')
+
     def create_random_name(self, prefix, length):  # pylint: disable=no-self-use
         return create_random_name(prefix=prefix, length=length)
 
