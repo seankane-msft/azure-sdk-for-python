@@ -142,8 +142,10 @@ class GlobalResourceGroupPreparer(AzureMgmtPreparer):
 
 class TableTestCase(AzureTestCase):
 
-    def __init__(self, *args, **kwargs):
-        super(TableTestCase, self).__init__(*args, **kwargs)
+    def initialize(self, *args, **kwargs):
+    # def __init__(self, *args, **kwargs):
+        # super(TableTestCase, self).__init__(*args, **kwargs)
+        super(TableTestCase, self).initialize(*args, **kwargs)
         self.replay_processors.append(XMSRequestIDBody())
         self._RESOURCE_GROUP = None,
 

@@ -22,12 +22,11 @@ from .decorators import live_only
 
 # class IntegrationTestBase(unittest.TestCase):
 class IntegrationTestBase(object):
-    def __init__(self, method_name):
-        # super(IntegrationTestBase, self).__init__(method_name)
-        self.diagnose = os.environ.get(ENV_TEST_DIAGNOSE, None) == 'True'
-        self.logger = logging.getLogger('azure_devtools.scenario_tests')
+    # def __init__(self, method_name):
+    #     # super(IntegrationTestBase, self).__init__(method_name)
+    #     self.diagnose = os.environ.get(ENV_TEST_DIAGNOSE, None) == 'True'
+    #     self.logger = logging.getLogger('azure_devtools.scenario_tests')
 
-    @pytest.fixture(scope="session")
     def initialize(self):
         # pytest won't collect tests with a __init__ method so this is a temporary workaroudn
         self.diagnose = os.environ.get(ENV_TEST_DIAGNOSE, None) == 'True'
@@ -91,11 +90,26 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
         'x-ms-authorization-auxiliary'
     ]
 
-    def __init__(self,  # pylint: disable=too-many-arguments
-                 method_name, config_file=None, recording_dir=None, recording_name=None, recording_processors=None,
-                 replay_processors=None, recording_patches=None, replay_patches=None, match_body=False,
-                 custom_request_matchers=None):
-        super(ReplayableTest, self).__init__(method_name)
+    def initialize(
+        self, method_name,
+        config_file=None,
+        recording_dir=None,
+        recording_name=None,
+        recording_processors=None,
+        replay_processors=None,
+        recording_patches=None,
+        replay_patches=None,
+        match_body=False,
+        custom_request_matchers=None
+    ):
+        super(ReplayableTest, self).initialize(method_name)
+
+
+    # def __init__(self,  # pylint: disable=too-many-arguments
+    #              method_name, config_file=None, recording_dir=None, recording_name=None, recording_processors=None,
+    #              replay_processors=None, recording_patches=None, replay_patches=None, match_body=False,
+    #              custom_request_matchers=None):
+    #     super(ReplayableTest, self).__init__(method_name)
 
         self.recording_processors = recording_processors or []
         self.replay_processors = replay_processors or []
@@ -137,7 +151,8 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
         self.test_resources_count = 0
         self.original_env = os.environ.copy()
 
-    def setUp(self):
+        # Add the setUp method into our new initialization method
+    # def setUp(self):
         super(ReplayableTest, self).setUp()
 
         if self.is_live and os.environ.get('AZURE_SKIP_LIVE_RECORDING', '').lower() == 'true':
