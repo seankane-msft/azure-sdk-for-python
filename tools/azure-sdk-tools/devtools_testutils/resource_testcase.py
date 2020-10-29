@@ -31,8 +31,10 @@ class ResourceGroupPreparer(AzureMgmtPreparer):
                  use_cache=False,
                  random_name_length=75,
                  parameter_name=RESOURCE_GROUP_PARAM,
-                 parameter_name_for_location='location', location='westus',
-                 disable_recording=True, playback_fake_resource=None,
+                 parameter_name_for_location='location',
+                 location='westus',
+                 disable_recording=True,
+                 playback_fake_resource=None,
                  client_kwargs=None,
                  random_name_enabled=False,
                  delete_after_tag_timedelta=datetime.timedelta(days=1)):

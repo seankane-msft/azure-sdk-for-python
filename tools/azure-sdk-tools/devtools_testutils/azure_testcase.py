@@ -100,7 +100,7 @@ class AzureTestCase(ReplayableTest):
         replay_patches=None,
         **kwargs
     ):
-
+        print("azuretestcase")
         self.working_folder = os.path.dirname(__file__)
         self.qualified_test_name = get_qualified_method_name(self, method_name)
         self._fake_settings, self._real_settings = self._load_settings()
@@ -121,7 +121,7 @@ class AzureTestCase(ReplayableTest):
         )
 
         # call the setUp method from unittest.TestCase
-        super(AzureTestCase,self).setUp()
+        # super(AzureTestCase,self).setUp()
 
     @property
     def settings(self):

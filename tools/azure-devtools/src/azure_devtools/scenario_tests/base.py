@@ -27,8 +27,10 @@ class IntegrationTestBase(object):
     #     self.diagnose = os.environ.get(ENV_TEST_DIAGNOSE, None) == 'True'
     #     self.logger = logging.getLogger('azure_devtools.scenario_tests')
 
-    def initialize(self):
-        # pytest won't collect tests with a __init__ method so this is a temporary workaroudn
+    def initialize(self, method_name):
+        # pytest won't collect tests with a __init__ method so this is a temporary workaroung
+        print("integrationtestbase")
+        self.method_name = method_name
         self.diagnose = os.environ.get(ENV_TEST_DIAGNOSE, None) == 'True'
         self.logger = logging.getLogger('azure_devtools.scenario_tests')
 
@@ -102,7 +104,9 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
         match_body=False,
         custom_request_matchers=None
     ):
+        print("replayabletest")
         super(ReplayableTest, self).initialize(method_name)
+        print("replayabletest2")
 
 
     # def __init__(self,  # pylint: disable=too-many-arguments
@@ -148,12 +152,13 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
             os.remove(self.recording_file)
 
         self.in_recording = self.is_live or not os.path.exists(self.recording_file)
+        print(self.in_recording)
         self.test_resources_count = 0
         self.original_env = os.environ.copy()
 
         # Add the setUp method into our new initialization method
     # def setUp(self):
-        super(ReplayableTest, self).setUp()
+        # super(ReplayableTest, self).setUp()
 
         if self.is_live and os.environ.get('AZURE_SKIP_LIVE_RECORDING', '').lower() == 'true':
             return
@@ -161,7 +166,7 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
         # set up cassette
         cm = self.vcr.use_cassette(self.recording_file)
         self.cassette = cm.__enter__()
-        self.addCleanup(cm.__exit__)
+        # self.addCleanup(cm.__exit__)
 
         # set up mock patches
         if self.in_recording:
@@ -170,6 +175,7 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
         else:
             for patch in self.replay_patches:
                 patch(self)
+        print("replayabletest-done")
 
     def tearDown(self):
         os.environ = self.original_env

@@ -47,21 +47,20 @@ from _shared.testcase import TableTestCase
 
 TEST_TABLE_PREFIX = 'pytablesync'
 
-
 # ------------------------------------------------------------------------------
-
-def _create_pipeline(account, credential, **kwargs):
-    # type: (Any, **Any) -> Tuple[Configuration, Pipeline]
-    credential_policy = SharedKeyCredentialPolicy(account_name=account.name, account_key=credential)
-    transport = RequestsTransport(**kwargs)
-    policies = [
-        HeadersPolicy(),
-        credential_policy,
-        ContentDecodePolicy(response_encoding="utf-8")]
-    return Pipeline(transport, policies=policies)
 
 
 class TestStorageTable(TableTestCase):
+
+    # --Initialize Fixture------------------------------------------------------
+    @pytest.fixture(scope="session", autouse=True)
+    def initialize(
+        self,
+        method_name="__init__"
+    ):
+        super(TestStorageTable, self).initialize(method_name)
+        print('done initializing')
+
 
     # --Helpers-----------------------------------------------------------------
     def _get_table_reference(self, prefix=TEST_TABLE_PREFIX):
@@ -113,7 +112,7 @@ class TestStorageTable(TableTestCase):
 
     @CachedResourceGroupPreparer(name_prefix="tablestest")
     @CachedStorageAccountPreparer(name_prefix="tablestest")
-    def test_create_table(self, resource_group, location, storage_account, storage_account_key):
+    def test_create_table_unique(self, resource_group, location, storage_account, storage_account_key):
         # # Arrange
         ts = TableServiceClient(self.account_url(storage_account, "table"), storage_account_key)
 

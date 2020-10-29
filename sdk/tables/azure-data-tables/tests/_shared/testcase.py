@@ -117,9 +117,12 @@ class TableTestCase(AzureTestCase):
     def initialize(self, *args, **kwargs):
     # def __init__(self, *args, **kwargs):
         # super(TableTestCase, self).__init__(*args, **kwargs)
+        print("tabletestcase")
         super(TableTestCase, self).initialize(*args, **kwargs)
+        # super(TableTestCase, self).setUp()
         self.replay_processors.append(XMSRequestIDBody())
         self._RESOURCE_GROUP = None,
+        print(self.in_recording)
 
     def connection_string(self, account, key):
         return "DefaultEndpointsProtocol=https;AccountName=" + account.name + ";AccountKey=" + str(key) + ";EndpointSuffix=core.windows.net"
