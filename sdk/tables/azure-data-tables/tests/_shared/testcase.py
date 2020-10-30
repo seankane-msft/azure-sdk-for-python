@@ -248,6 +248,9 @@ class TableTestCase(AzureTestCase):
     def generate_fake_token(self):
         return FakeTokenCredential()
 
+    def clean_up(self, **kwargs):
+        super(TableTestCase, self).clean_up()
+
 
 def not_for_emulator(test):
     def skip_test_if_targeting_emulator(self):

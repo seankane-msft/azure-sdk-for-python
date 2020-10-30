@@ -143,6 +143,7 @@ You must specify use_cache=True in the preparer decorator""".format(test_class_i
             trim_kwargs_from_test_function(fn, trimmed_kwargs)
 
             try:
+                print(f"agg_cache: {aggregate_cache_key}\nTrimmed: {trimmed_kwargs}")
                 try:
                     import asyncio
                     if asyncio.iscoroutinefunction(fn):

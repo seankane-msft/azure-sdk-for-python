@@ -90,7 +90,7 @@ class AzureTestCase(ReplayableTest):
     #              **kwargs):
     def initialize(
         self,
-        method_name,
+        method_name=None,
         config_file=None,
         recording_dir=None,
         recording_name=None,
@@ -100,7 +100,8 @@ class AzureTestCase(ReplayableTest):
         replay_patches=None,
         **kwargs
     ):
-        print("azuretestcase")
+        if not method_name:
+            method_name = self._testMethodName
         self.working_folder = os.path.dirname(__file__)
         self.qualified_test_name = get_qualified_method_name(self, method_name)
         self._fake_settings, self._real_settings = self._load_settings()
@@ -298,3 +299,7 @@ class AzureTestCase(ReplayableTest):
             return loop.run_until_complete(test_fn(test_class_instance, **kwargs))
 
         return run
+
+    def clean_up(self):
+        print(f"AzureTestCase cleaning up")
+        super(AzureTestCase, self).clean_up()

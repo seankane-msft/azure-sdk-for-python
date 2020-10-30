@@ -20,8 +20,8 @@ from .utilities import create_random_name
 from .decorators import live_only
 
 
-# class IntegrationTestBase(unittest.TestCase):
-class IntegrationTestBase(object):
+class IntegrationTestBase(unittest.TestCase):
+# class IntegrationTestBase(object):
     # def __init__(self, method_name):
     #     # super(IntegrationTestBase, self).__init__(method_name)
     #     self.diagnose = os.environ.get(ENV_TEST_DIAGNOSE, None) == 'True'
@@ -33,6 +33,7 @@ class IntegrationTestBase(object):
         self.method_name = method_name
         self.diagnose = os.environ.get(ENV_TEST_DIAGNOSE, None) == 'True'
         self.logger = logging.getLogger('azure_devtools.scenario_tests')
+        self.clean_up_functions = []
 
     def create_random_name(self, prefix, length):  # pylint: disable=no-self-use
         return create_random_name(prefix=prefix, length=length)
@@ -41,7 +42,8 @@ class IntegrationTestBase(object):
         """ Create a temporary file for testing. The test harness will delete the file during tearing down. """
         fd, path = tempfile.mkstemp()
         os.close(fd)
-        self.addCleanup(lambda: os.remove(path))
+        # self.addCleanup(lambda: os.remove(path))
+        self.clean_up_functions.append(lambda: os.remove(path))
 
         with open(path, mode='r+b') as f:
             if full_random:
@@ -69,6 +71,11 @@ class IntegrationTestBase(object):
     @classmethod
     def pop_env(cls, key):
         return os.environ.pop(key, None)
+
+    def clean_up(self):
+        # super(IntegrationTestBase, self).cleanUp()
+        for f in self.clean_up_functions:
+            f()
 
 
 @live_only()
@@ -152,7 +159,6 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
             os.remove(self.recording_file)
 
         self.in_recording = self.is_live or not os.path.exists(self.recording_file)
-        print(self.in_recording)
         self.test_resources_count = 0
         self.original_env = os.environ.copy()
 
@@ -166,7 +172,8 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
         # set up cassette
         cm = self.vcr.use_cassette(self.recording_file)
         self.cassette = cm.__enter__()
-        # self.addCleanup(cm.__exit__)
+        # self.addCleanup(cm.__exit__) # NOTE: This is the line that writes & closes the recordings file
+        self.clean_up_functions.append(cm.__exit__)
 
         # set up mock patches
         if self.in_recording:
@@ -178,6 +185,7 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
         print("replayabletest-done")
 
     def tearDown(self):
+        print("replayable tear down")
         os.environ = self.original_env
         # Autorest.Python 2.x
         assert not [t for t in threading.enumerate() if t.name.startswith("AzureOperationPoller")], \
@@ -249,3 +257,6 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
                 return False
 
         return True
+
+    def clean_up(self):
+        super(ReplayableTest, self).clean_up()
