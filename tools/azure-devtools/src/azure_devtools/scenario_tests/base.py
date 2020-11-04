@@ -20,8 +20,8 @@ from .utilities import create_random_name
 from .decorators import live_only
 
 
-class IntegrationTestBase(unittest.TestCase):
-# class IntegrationTestBase(object):
+# class IntegrationTestBase(unittest.TestCase):
+class IntegrationTestBase(object):
     # def __init__(self, method_name):
     #     # super(IntegrationTestBase, self).__init__(method_name)
     #     self.diagnose = os.environ.get(ENV_TEST_DIAGNOSE, None) == 'True'

@@ -100,15 +100,6 @@ class AzureTestCase(ReplayableTest):
         replay_patches=None,
         **kwargs
     ):
-        if not method_name:
-            method_name = self._testMethodName
-        self.working_folder = os.path.dirname(__file__)
-        self.qualified_test_name = get_qualified_method_name(self, method_name)
-        self._fake_settings, self._real_settings = self._load_settings()
-        self.scrubber = GeneralNameReplacer()
-        config_file = config_file or os.path.join(self.working_folder, TEST_SETTING_FILENAME)
-        if not os.path.exists(config_file):
-            config_file = None
         super(AzureTestCase, self).initialize(
             method_name,
             config_file=config_file,
@@ -120,6 +111,16 @@ class AzureTestCase(ReplayableTest):
             replay_patches=replay_patches,
             **kwargs
         )
+
+        if not method_name:
+            method_name = self._testMethodName
+        self.working_folder = os.path.dirname(__file__)
+        self.qualified_test_name = get_qualified_method_name(self, method_name)
+        self._fake_settings, self._real_settings = self._load_settings()
+        self.scrubber = GeneralNameReplacer()
+        config_file = config_file or os.path.join(self.working_folder, TEST_SETTING_FILENAME)
+        if not os.path.exists(config_file):
+            config_file = None
 
         # call the setUp method from unittest.TestCase
         # super(AzureTestCase,self).setUp()
