@@ -20,16 +20,10 @@ from .utilities import create_random_name
 from .decorators import live_only
 
 
-# class IntegrationTestBase(unittest.TestCase):
 class IntegrationTestBase(object):
-    # def __init__(self, method_name):
-    #     # super(IntegrationTestBase, self).__init__(method_name)
-    #     self.diagnose = os.environ.get(ENV_TEST_DIAGNOSE, None) == 'True'
-    #     self.logger = logging.getLogger('azure_devtools.scenario_tests')
 
-    def initialize(self, method_name):
-        # pytest won't collect tests with a __init__ method so this is a temporary workaroung
-        print("integrationtestbase")
+    def setup_class(self, method_name=None):
+        print("Initializing IntegrationTestBase\n")
         self.method_name = method_name
         self.diagnose = os.environ.get(ENV_TEST_DIAGNOSE, None) == 'True'
         self.logger = logging.getLogger('azure_devtools.scenario_tests')
@@ -72,8 +66,8 @@ class IntegrationTestBase(object):
     def pop_env(cls, key):
         return os.environ.pop(key, None)
 
-    def clean_up(self):
-        # super(IntegrationTestBase, self).cleanUp()
+    def teardown_class(self):
+        print("Tearing down integrationtestbase")
         for f in self.clean_up_functions:
             f()
 
@@ -99,7 +93,7 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
         'x-ms-authorization-auxiliary'
     ]
 
-    def initialize(
+    def setup_class(
         self, method_name,
         config_file=None,
         recording_dir=None,
@@ -111,16 +105,7 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
         match_body=False,
         custom_request_matchers=None
     ):
-        print("replayabletest")
-        super(ReplayableTest, self).initialize(method_name)
-        print("replayabletest2")
-
-
-    # def __init__(self,  # pylint: disable=too-many-arguments
-    #              method_name, config_file=None, recording_dir=None, recording_name=None, recording_processors=None,
-    #              replay_processors=None, recording_patches=None, replay_patches=None, match_body=False,
-    #              custom_request_matchers=None):
-    #     super(ReplayableTest, self).__init__(method_name)
+        print("Initializing ReplayableTest\n")
 
         self.recording_processors = recording_processors or []
         self.replay_processors = replay_processors or []
@@ -132,7 +117,7 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
 
         self.disable_recording = False
 
-        test_file_path = inspect.getfile(self.__class__)
+        test_file_path = inspect.getfile(self)
         recording_dir = recording_dir or os.path.join(os.path.dirname(test_file_path), 'recordings')
         self.is_live = self.config.record_mode
 
@@ -162,6 +147,11 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
         self.test_resources_count = 0
         self.original_env = os.environ.copy()
 
+        super(ReplayableTest, self).setup_class(
+            self,
+            method_name=method_name
+        )
+
         # Add the setUp method into our new initialization method
     # def setUp(self):
         # super(ReplayableTest, self).setUp()
@@ -184,7 +174,7 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
                 patch(self)
         print("replayabletest-done")
 
-    def tearDown(self):
+    def teardown_class(self):
         print("replayable tear down")
         os.environ = self.original_env
         # Autorest.Python 2.x
@@ -193,6 +183,7 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
         # Autorest.Python 3.x
         assert not [t for t in threading.enumerate() if t.name.startswith("LROPoller")], \
             "You need to call 'result' or 'wait' on all LROPoller you have created"
+        super(ReplayableTest, self).teardown_class(self)
 
     def _process_request_recording(self, request):
         if self.disable_recording:
@@ -257,6 +248,3 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
                 return False
 
         return True
-
-    def clean_up(self):
-        super(ReplayableTest, self).clean_up()

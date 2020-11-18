@@ -88,7 +88,7 @@ class AzureTestCase(ReplayableTest):
     #              recording_processors=None, replay_processors=None,
     #              recording_patches=None, replay_patches=None,
     #              **kwargs):
-    def initialize(
+    def setup_class(
         self,
         method_name=None,
         config_file=None,
@@ -100,30 +100,36 @@ class AzureTestCase(ReplayableTest):
         replay_patches=None,
         **kwargs
     ):
-        super(AzureTestCase, self).initialize(
+        print("Initializing AzureTestCase\n")
+
+        # if not method_name:
+        #     method_name = self._testMethodName
+        # self.working_folder = os.path.dirname(__file__)
+        # self.qualified_test_name = get_qualified_method_name(self, method_name)
+        # self._fake_settings, self._real_settings = self._load_settings()
+        # self.scrubber = GeneralNameReplacer()
+        # config_file = config_file or os.path.join(self.working_folder, TEST_SETTING_FILENAME)
+        # if not os.path.exists(config_file):
+        #     config_file = None
+
+        super(AzureTestCase, self).setup_class(
+            self,
             method_name,
             config_file=config_file,
             recording_dir=recording_dir,
-            recording_name=recording_name or self.qualified_test_name,
-            recording_processors=recording_processors or self._get_recording_processors(),
-            replay_processors=replay_processors or self._get_replay_processors(),
+            recording_name=recording_name, #or self.qualified_test_name,
+            recording_processors=recording_processors, # or self._get_recording_processors(),
+            replay_processors=replay_processors, # or self._get_replay_processors(),
             recording_patches=recording_patches,
             replay_patches=replay_patches,
             **kwargs
         )
 
-        if not method_name:
-            method_name = self._testMethodName
-        self.working_folder = os.path.dirname(__file__)
+    def setup_method(self, method):
+        print("Setup method AzureTestCase")
+        method_name = method.__name__
         self.qualified_test_name = get_qualified_method_name(self, method_name)
-        self._fake_settings, self._real_settings = self._load_settings()
-        self.scrubber = GeneralNameReplacer()
-        config_file = config_file or os.path.join(self.working_folder, TEST_SETTING_FILENAME)
-        if not os.path.exists(config_file):
-            config_file = None
 
-        # call the setUp method from unittest.TestCase
-        # super(AzureTestCase,self).setUp()
 
     @property
     def settings(self):
@@ -181,26 +187,27 @@ class AzureTestCase(ReplayableTest):
             return default_value
 
 
-    def setUp(self):
-        # Every test uses a different resource group name calculated from its
-        # qualified test name.
-        #
-        # When running all tests serially, this allows us to delete
-        # the resource group in teardown without waiting for the delete to
-        # complete. The next test in line will use a different resource group,
-        # so it won't have any trouble creating its resource group even if the
-        # previous test resource group hasn't finished deleting.
-        #
-        # When running tests individually, if you try to run the same test
-        # multiple times in a row, it's possible that the delete in the previous
-        # teardown hasn't completed yet (because we don't wait), and that
-        # would make resource group creation fail.
-        # To avoid that, we also delete the resource group in the
-        # setup, and we wait for that delete to complete.
-        super(AzureTestCase, self).setUp()
+    # def setUp(self):
+    #     # Every test uses a different resource group name calculated from its
+    #     # qualified test name.
+    #     #
+    #     # When running all tests serially, this allows us to delete
+    #     # the resource group in teardown without waiting for the delete to
+    #     # complete. The next test in line will use a different resource group,
+    #     # so it won't have any trouble creating its resource group even if the
+    #     # previous test resource group hasn't finished deleting.
+    #     #
+    #     # When running tests individually, if you try to run the same test
+    #     # multiple times in a row, it's possible that the delete in the previous
+    #     # teardown hasn't completed yet (because we don't wait), and that
+    #     # would make resource group creation fail.
+    #     # To avoid that, we also delete the resource group in the
+    #     # setup, and we wait for that delete to complete.
+    #     super(AzureTestCase, self).setUp()
 
-    def tearDown(self):
-        return super(AzureTestCase, self).tearDown()
+    def teardown_class(self):
+        print(f"AzureTestCase teardown_class")
+        super(AzureTestCase, self).teardown_class(self)
 
     def create_basic_client(self, client_class, **kwargs):
 
@@ -300,7 +307,3 @@ class AzureTestCase(ReplayableTest):
             return loop.run_until_complete(test_fn(test_class_instance, **kwargs))
 
         return run
-
-    def clean_up(self):
-        print(f"AzureTestCase cleaning up")
-        super(AzureTestCase, self).clean_up()

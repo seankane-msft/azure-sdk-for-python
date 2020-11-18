@@ -49,19 +49,22 @@ TEST_TABLE_PREFIX = 'pytablesync'
 
 
 class TestStorageTable(TableTestCase):
-
     # --Initialize Fixture------------------------------------------------------
-    @pytest.fixture(scope="class", autouse=True)
-    def initialize(
-        self,
-    ):
+    # @pytest.fixture(scope="class", autouse=True)
+    # def initialize(
+    #     self,
+    # ):
+    def setup_class(self):
         # initialize
-        super(TestStorageTable, self).initialize()
+        print("Initializing TestStorageTable\n")
+        super(TestStorageTable, self).setup_class(self)
         print('done initializing')
-        yield
 
-        # clean up
-        super(TestStorageTable, self).clean_up()
+    # def setup_method(self, method, *args, **kwargs):
+    #     super(AzureTestCase, self).setup_method(method, *args, **kwargs)
+
+    def teardown_class(self):
+        super(TestStorageTable, self).teardown_class(self)
 
     # --Helpers-----------------------------------------------------------------
     def _get_table_reference(self, prefix=TEST_TABLE_PREFIX):
@@ -110,6 +113,12 @@ class TestStorageTable(TableTestCase):
 
         ps = ts.get_service_properties()
         ts.delete_table(table_name)
+
+    def test_nothing(self):
+        assert 1
+
+    def test_nothing_2(self):
+        assert 2
 
     @CachedResourceGroupPreparer(name_prefix="tablestest")
     @CachedStorageAccountPreparer(name_prefix="tablestest")
