@@ -25,6 +25,7 @@ from devtools_testutils import ResourceGroupPreparer, StorageAccountPreparer
 from azure.storage.blob._generated.models import RehydratePriority
 from _shared.testcase import GlobalStorageAccountPreparer
 from _shared.asynctestcase import AsyncStorageTestCase
+from devtools_testutils import ResourceGroupPreparer, StorageAccountPreparer
 # ------------------------------------------------------------------------------
 TEST_BLOB_PREFIX = 'blob'
 
@@ -68,7 +69,8 @@ class BlobStorageAccountTestAsync(AsyncStorageTestCase):
         self.assertEqual(actual_data, expected_data)
 
     # --Tests specific to Blob Storage Accounts (not general purpose)------------
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_standard_blob_tier_set_tier_api(self, resource_group, location, storage_account, storage_account_key):
         bsc = BlobServiceClient(self.account_url(storage_account, "blob"), credential=storage_account_key, transport=AiohttpTestTransport())
@@ -122,7 +124,8 @@ class BlobStorageAccountTestAsync(AsyncStorageTestCase):
 
             await blob.delete_blob()
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_set_std_blob_tier_w_rehydrate_priority(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
@@ -142,7 +145,8 @@ class BlobStorageAccountTestAsync(AsyncStorageTestCase):
         # Assert
         self.assertEqual('rehydrate-pending-to-cool', blob_props.archive_status)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_rehydration_status(self, resource_group, location, storage_account, storage_account_key):
         bsc = BlobServiceClient(self.account_url(storage_account, "blob"), credential=storage_account_key, transport=AiohttpTestTransport())

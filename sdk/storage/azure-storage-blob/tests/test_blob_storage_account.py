@@ -51,7 +51,8 @@ class BlobStorageAccountTest(StorageTestCase):
 
     # --Tests specific to Blob Storage Accounts (not general purpose)------------
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_standard_blob_tier_set_tier_api(self, resource_group, location, storage_account, storage_account_key):
         bsc = BlobServiceClient(self.account_url(storage_account, "blob"), credential=storage_account_key)
         self._setup(bsc)
@@ -99,7 +100,8 @@ class BlobStorageAccountTest(StorageTestCase):
 
             blob.delete_blob()
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_set_standard_blob_tier_with_rehydrate_priority(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         bsc = BlobServiceClient(self.account_url(storage_account, "blob"), credential=storage_account_key)
@@ -118,7 +120,8 @@ class BlobStorageAccountTest(StorageTestCase):
         # Assert
         self.assertEqual('rehydrate-pending-to-cool', blob_props.archive_status)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_rehydration_status(self, resource_group, location, storage_account, storage_account_key):
         bsc = BlobServiceClient(self.account_url(storage_account, "blob"), credential=storage_account_key)
         self._setup(bsc)

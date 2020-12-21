@@ -80,7 +80,8 @@ class StorageBlockBlobAsyncTest(AsyncStorageTestCase):
         )
         self.source_blob_url = BlobClient.from_blob_url(blob.url, credential=sas_token).url
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_put_block_from_url_and_commit_async(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
@@ -116,7 +117,8 @@ class StorageBlockBlobAsyncTest(AsyncStorageTestCase):
         self.assertEqual(content, self.source_blob_data)
         self.assertEqual(len(content), 8 * 1024)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_put_block_from_url_and_vldte_content_md5(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
@@ -154,7 +156,8 @@ class StorageBlockBlobAsyncTest(AsyncStorageTestCase):
         self.assertEqual(len(uncommitted), 1)
         self.assertEqual(len(committed), 0)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_copy_blob_sync_async(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
@@ -175,7 +178,8 @@ class StorageBlockBlobAsyncTest(AsyncStorageTestCase):
         self.assertEqual(self.source_blob_data, content)
 
     @pytest.mark.playback_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_sync_copy_blob_returns_vid(self, resource_group, location, storage_account, storage_account_key):
         # Arrange

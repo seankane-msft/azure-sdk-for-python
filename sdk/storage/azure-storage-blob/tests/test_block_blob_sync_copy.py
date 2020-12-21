@@ -82,7 +82,8 @@ class StorageBlockBlobTest(StorageTestCase):
         self.source_blob_url_with_special_chars = BlobClient.from_blob_url(
             blob_with_special_chars.url, credential=sas_token_for_special_chars).url
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_put_block_from_url_and_commit(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         dest_blob_name = self.get_resource_name('destblob')
@@ -138,7 +139,8 @@ class StorageBlockBlobTest(StorageTestCase):
         self.assertEqual(len(content), 8 * 1024)
         self.assertEqual(content, self.source_blob_with_special_chars_data)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_put_block_from_url_and_validate_content_md5(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         dest_blob_name = self.get_resource_name('destblob')
@@ -174,7 +176,8 @@ class StorageBlockBlobTest(StorageTestCase):
         self.assertEqual(len(uncommitted), 1)
         self.assertEqual(len(committed), 0)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_copy_blob_sync(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         dest_blob_name = self.get_resource_name('destblob')
@@ -204,7 +207,8 @@ class StorageBlockBlobTest(StorageTestCase):
         self.assertEqual(self.source_blob_with_special_chars_data, content)
 
     @pytest.mark.playback_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_sync_copy_blob_returns_vid(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         dest_blob_name = self.get_resource_name('destblob')

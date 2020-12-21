@@ -23,7 +23,8 @@ class StorageBlobUploadChunkingTest(StorageTestCase):
 
     # this is a white box test that's designed to make sure _Substream behaves properly
     # when the buffer needs to be swapped out at least once
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_sub_stream_with_length_larger_than_buffer(self, resource_group, location, storage_account, storage_account_key):
         data = os.urandom(12 * 1024 * 1024)
 
@@ -76,7 +77,8 @@ class StorageBlobUploadChunkingTest(StorageTestCase):
 
     # this is a white box test that's designed to make sure _Substream behaves properly
     # when block size is smaller than 4MB, thus there's no need for buffer swap
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_sub_stream_with_length_equal_to_buffer(self, resource_group, location, storage_account, storage_account_key):
         data = os.urandom(6 * 1024 * 1024)
 

@@ -62,7 +62,8 @@ class StorageLoggingTest(StorageTestCase):
         sas_source = BlobClient.from_blob_url(source_blob.url, credential=sas_token)
         self.source_blob_url = sas_source.url
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_authorization_is_scrubbed_off(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         bsc = BlobServiceClient(self.account_url(storage_account, "blob"), storage_account_key)
@@ -79,7 +80,8 @@ class StorageLoggingTest(StorageTestCase):
             self.assertFalse('SharedKey' in log_as_str)
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_sas_signature_is_scrubbed_off(self, resource_group, location, storage_account, storage_account_key):
         # SAS URL is calculated from storage key, so this test runs live only
         bsc = BlobServiceClient(self.account_url(storage_account, "blob"), storage_account_key)
@@ -110,7 +112,8 @@ class StorageLoggingTest(StorageTestCase):
             self.assertFalse(signed_signature in log_as_str)
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_copy_source_sas_is_scrubbed_off(self, resource_group, location, storage_account, storage_account_key):
         # SAS URL is calculated from storage key, so this test runs live only
         bsc = BlobServiceClient(self.account_url(storage_account, "blob"), storage_account_key)

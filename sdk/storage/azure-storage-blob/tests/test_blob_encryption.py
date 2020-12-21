@@ -42,6 +42,7 @@ from encryption_test_helper import (
     RSAKeyWrapper,
 )
 from _shared.testcase import StorageTestCase, GlobalStorageAccountPreparer
+from devtools_testutils import ResourceGroupPreparer, StorageAccountPreparer
 
 # ------------------------------------------------------------------------------
 TEST_CONTAINER_PREFIX = 'encryption_container'
@@ -93,7 +94,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
 
     # --Test cases for blob encryption ----------------------------------------
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_missing_attribute_kek_wrap(self, resource_group, location, storage_account, storage_account_key):
         # In the shared method _generate_blob_encryption_key
         self._setup(storage_account, storage_account_key)
@@ -125,7 +127,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
         with self.assertRaises(AttributeError):
             self._create_small_blob(BlobType.BlockBlob)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_invalid_value_kek_wrap(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         self.bsc.require_encryption = True
@@ -148,7 +151,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
         with self.assertRaises(AttributeError):
             self._create_small_blob(BlobType.BlockBlob)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_missing_attribute_kek_unwrap(self, resource_group, location, storage_account, storage_account_key):
         # Shared between all services in decrypt_blob
         self._setup(storage_account, storage_account_key)
@@ -175,7 +179,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
             blob.download_blob().content_as_bytes()
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_invalid_value_kek_unwrap(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         self.bsc.require_encryption = True
@@ -190,7 +195,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
             blob.download_blob().content_as_bytes()
         self.assertEqual(str(e.exception), 'Decryption failed.')
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_get_blob_kek(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         self.bsc.require_encryption = True
@@ -204,7 +210,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
         self.assertEqual(b"".join(list(content.chunks())), self.bytes)
 
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_get_blob_resolver(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         self.bsc.require_encryption = True
@@ -222,7 +229,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
         self.assertEqual(content, self.bytes)
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_get_blob_kek_RSA(self, resource_group, location, storage_account, storage_account_key):
         # We can only generate random RSA keys, so this must be run live or
         # the playback test will fail due to a change in kek values.
@@ -238,7 +246,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
         self.assertEqual(b"".join(list(content.chunks())), self.bytes)
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_get_blob_nonmatching_kid(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         self.bsc.require_encryption = True
@@ -253,7 +262,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
             blob.download_blob().content_as_bytes()
         self.assertEqual(str(e.exception), 'Decryption failed.')
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_put_blob_invalid_stream_type(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         self.bsc.require_encryption = True
@@ -275,7 +285,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
         self.assertTrue('Blob data should be of type bytes.' in str(e.exception))
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_put_blob_chunking_required_mult_of_block_size(self, resource_group, location, storage_account,
                                                            storage_account_key):
         # parallel tests introduce random order of requests, can only run live
@@ -295,7 +306,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
         self.assertEqual(content, blob_content)
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_put_blob_chunking_required_non_mult_of_block_size(self, resource_group, location, storage_account,
                                                                storage_account_key):
         # parallel tests introduce random order of requests, can only run live
@@ -314,7 +326,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
         self.assertEqual(content, blob_content)
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_put_blob_chunking_required_range_specified(self, resource_group, location, storage_account,
                                                         storage_account_key):
         # parallel tests introduce random order of requests, can only run live
@@ -335,7 +348,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
         # Assert
         self.assertEqual(content[:self.config.max_single_put_size + 53], blob_content)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_put_block_blob_single_shot(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         self.bsc.key_encryption_key = KeyWrapper('key1')
@@ -351,7 +365,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
         # Assert
         self.assertEqual(content, blob_content)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_put_blob_range(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         self.bsc.require_encryption = True
@@ -373,7 +388,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
         # Assert
         self.assertEqual(content[2:2 + self.config.max_single_put_size + 5], blob_content)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_put_blob_empty(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         self.bsc.key_encryption_key = KeyWrapper('key1')
@@ -389,7 +405,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
         # Assert
         self.assertEqual(content, blob_content)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_put_blob_serial_upload_chunking(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         self.bsc.key_encryption_key = KeyWrapper('key1')
@@ -405,7 +422,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
         # Assert
         self.assertEqual(content, blob_content)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_get_blob_range_beginning_to_middle(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         self.bsc.key_encryption_key = KeyWrapper('key1')
@@ -421,7 +439,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
         # Assert
         self.assertEqual(content[:50], blob_content)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_get_blob_range_middle_to_end(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         self.bsc.key_encryption_key = KeyWrapper('key1')
@@ -439,7 +458,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
         self.assertEqual(content[100:], blob_content)
         self.assertEqual(content[100:], blob_content2)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_get_blob_range_middle_to_middle(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         self.bsc.key_encryption_key = KeyWrapper('key1')
@@ -455,7 +475,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
         # Assert
         self.assertEqual(content[5:98], blob_content)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_get_blob_range_aligns_on_16_byte_block(self, resource_group, location, storage_account,
                                                     storage_account_key):
         self._setup(storage_account, storage_account_key)
@@ -472,7 +493,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
         # Assert
         self.assertEqual(content[48:64], blob_content)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_get_blob_range_expanded_to_beginning_block_align(self, resource_group, location, storage_account,
                                                               storage_account_key):
         self._setup(storage_account, storage_account_key)
@@ -489,7 +511,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
         # Assert
         self.assertEqual(content[5:55], blob_content)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_get_blob_range_expanded_to_beginning_iv(self, resource_group, location, storage_account,
                                                      storage_account_key):
         self._setup(storage_account, storage_account_key)
@@ -506,7 +529,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
         # Assert
         self.assertEqual(content[22:42], blob_content)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_put_blob_strict_mode(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         self.bsc.require_encryption = True
@@ -535,7 +559,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
                 blob.upload_blob('To encrypt', blob_type=service)
         self._teardown(file_name)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_get_blob_strict_mode_no_policy(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         self.bsc.require_encryption = True
@@ -549,7 +574,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
         with self.assertRaises(ValueError):
             blob.download_blob().content_as_bytes()
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_get_blob_strict_mode_unencrypted_blob(self, resource_group, location, storage_account,
                                                    storage_account_key):
         self._setup(storage_account, storage_account_key)
@@ -563,7 +589,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
         with self.assertRaises(HttpResponseError):
             blob.download_blob().content_as_bytes()
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_invalid_methods_fail_block(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         self.bsc.key_encryption_key = KeyWrapper('key1')
@@ -579,7 +606,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
             blob.commit_block_list(['block1'])
         self.assertEqual(str(e.exception), _ERROR_UNSUPPORTED_METHOD_FOR_ENCRYPTION)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_invalid_methods_fail_append(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         self.bsc.key_encryption_key = KeyWrapper('key1')
@@ -600,7 +628,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
             blob.upload_blob(b'To encrypt', blob_type=BlobType.AppendBlob)
         self.assertEqual(str(e.exception), _ERROR_UNSUPPORTED_METHOD_FOR_ENCRYPTION)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_invalid_methods_fail_page(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         self.bsc.key_encryption_key = KeyWrapper('key1')
@@ -616,7 +645,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
             blob.create_page_blob(512)
         self.assertEqual(str(e.exception), _ERROR_UNSUPPORTED_METHOD_FOR_ENCRYPTION)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_validate_encryption(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         self.bsc.require_encryption = True
@@ -642,7 +672,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
 
         self.assertEqual(self.bytes, content)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_block_blob_from_star(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         self._create_blob_from_star(BlobType.BlockBlob, self.bytes, self.bytes)
@@ -659,7 +690,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
         self._create_blob_from_star(BlobType.BlockBlob, b'To encrypt', 'To encrypt')
         self._teardown(file_name)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_page_blob_from_star(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         content = self.get_random_bytes(512)
@@ -689,7 +721,8 @@ class StorageBlobEncryptionTest(StorageTestCase):
         self.assertEqual(content, blob_content)
         blob.delete_blob()
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer()
+    @StorageAccountPreparer()
     def test_get_blob_to_star(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         self.bsc.require_encryption = True

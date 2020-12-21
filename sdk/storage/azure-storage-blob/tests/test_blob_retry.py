@@ -20,6 +20,7 @@ from _shared.testcase import (
     ResponseCallback,
     GlobalStorageAccountPreparer
 )
+from devtools_testutils import ResourceGroupPreparer, StorageAccountPreparer
 
 # test constants
 PUT_BLOCK_SIZE = 4 * 1024
@@ -55,7 +56,8 @@ class StorageBlobRetryTest(StorageTestCase):
             return self.wrapped_stream.tell()
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_retry_put_block_with_seekable_stream(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         bsc = BlobServiceClient(self.account_url(storage_account, "blob"), credential=storage_account_key,
@@ -87,7 +89,8 @@ class StorageBlobRetryTest(StorageTestCase):
         self.assertEqual(content, data)
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_retry_put_block_with_non_seekable_stream(self, resource_group, location, storage_account,
                                                       storage_account_key):
         # Arrange
@@ -121,7 +124,8 @@ class StorageBlobRetryTest(StorageTestCase):
         self.assertEqual(content, data)
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_retry_put_block_with_non_seekable_stream_fail(self, resource_group, location, storage_account,
                                                            storage_account_key):
         # Arrange

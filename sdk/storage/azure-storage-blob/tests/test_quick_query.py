@@ -9,6 +9,7 @@ import base64
 
 import pytest
 
+from devtools_testutils import ResourceGroupPreparer, StorageAccountPreparer
 from _shared.testcase import StorageTestCase, GlobalStorageAccountPreparer
 from azure.storage.blob import (
     BlobServiceClient,
@@ -107,7 +108,8 @@ class StorageQuickQueryTest(StorageTestCase):
 
     # -- Test cases for APIs supporting CPK ----------------------------------------------
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_quick_query_readall(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         bsc = BlobServiceClient(
@@ -134,7 +136,8 @@ class StorageQuickQueryTest(StorageTestCase):
         self.assertEqual(data, CSV_DATA.replace(b'\r\n', b'\n'))
         self._teardown(bsc)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_quick_query_iter_records(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         bsc = BlobServiceClient(
@@ -162,7 +165,8 @@ class StorageQuickQueryTest(StorageTestCase):
         self.assertEqual(data, CSV_DATA.replace(b'\r\n', b''))
         self._teardown(bsc)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_quick_query_readall_with_encoding(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         bsc = BlobServiceClient(
@@ -189,7 +193,8 @@ class StorageQuickQueryTest(StorageTestCase):
         self.assertEqual(data, CSV_DATA.replace(b'\r\n', b'\n').decode('utf-8'))
         self._teardown(bsc)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_quick_query_iter_records_with_encoding(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         bsc = BlobServiceClient(
@@ -212,7 +217,8 @@ class StorageQuickQueryTest(StorageTestCase):
         self.assertEqual(data, CSV_DATA.replace(b'\r\n', b'').decode('utf-8'))
         self._teardown(bsc)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_quick_query_iter_records_with_headers(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         bsc = BlobServiceClient(
@@ -241,7 +247,8 @@ class StorageQuickQueryTest(StorageTestCase):
         self.assertEqual(data, CSV_DATA.replace(b'\r\n', b'')[44:])
         self._teardown(bsc)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_quick_query_iter_records_with_progress(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         bsc = BlobServiceClient(
@@ -267,7 +274,8 @@ class StorageQuickQueryTest(StorageTestCase):
         self.assertEqual(progress, reader._size)
         self._teardown(bsc)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_quick_query_readall_with_serialization_setting(self, resource_group, location, storage_account,
                                                     storage_account_key):
         # Arrange
@@ -311,7 +319,8 @@ class StorageQuickQueryTest(StorageTestCase):
         self.assertEqual(query_result, CONVERTED_CSV_DATA)
         self._teardown(bsc)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_quick_query_iter_records_with_serialization_setting(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         bsc = BlobServiceClient(
@@ -352,7 +361,8 @@ class StorageQuickQueryTest(StorageTestCase):
         self.assertEqual(len(data), 33)
         self._teardown(bsc)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_quick_query_readall_with_fatal_error_handler(self, resource_group, location, storage_account,
                                                           storage_account_key):
         # Arrange
@@ -399,7 +409,8 @@ class StorageQuickQueryTest(StorageTestCase):
         self.assertEqual(query_result, b'')
         self._teardown(bsc)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_quick_query_iter_records_with_fatal_error_handler(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         bsc = BlobServiceClient(
@@ -441,13 +452,14 @@ class StorageQuickQueryTest(StorageTestCase):
         data = []
         for record in resp.records():
             data.append(record)
-        
+
         self.assertEqual(len(errors), 1)
         self.assertEqual(resp._size, 43)
         self.assertEqual(data, [b''])
         self._teardown(bsc)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_quick_query_readall_with_fatal_error_handler_raise(self, resource_group, location, storage_account,
                                                           storage_account_key):
         # Arrange
@@ -491,7 +503,8 @@ class StorageQuickQueryTest(StorageTestCase):
             query_result = resp.readall()
         self._teardown(bsc)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_quick_query_iter_records_with_fatal_error_handler_raise(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         bsc = BlobServiceClient(
@@ -536,7 +549,8 @@ class StorageQuickQueryTest(StorageTestCase):
                 print(record)
         self._teardown(bsc)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_quick_query_readall_with_fatal_error_ignore(self, resource_group, location, storage_account,
                                                          storage_account_key):
         # Arrange
@@ -568,7 +582,8 @@ class StorageQuickQueryTest(StorageTestCase):
         query_result = resp.readall()
         self._teardown(bsc)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_quick_query_iter_records_with_fatal_error_ignore(self, resource_group, location, storage_account,
                                                          storage_account_key):
         # Arrange
@@ -607,7 +622,8 @@ class StorageQuickQueryTest(StorageTestCase):
             print(record)
         self._teardown(bsc)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_quick_query_readall_with_nonfatal_error_handler(self, resource_group, location, storage_account,
                                                                  storage_account_key):
         # Arrange
@@ -651,7 +667,8 @@ class StorageQuickQueryTest(StorageTestCase):
         self.assertTrue(len(query_result) > 0)
         self._teardown(bsc)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_quick_query_iter_records_with_nonfatal_error_handler(self, resource_group, location, storage_account,
                                                                  storage_account_key):
         # Arrange
@@ -695,7 +712,8 @@ class StorageQuickQueryTest(StorageTestCase):
         self.assertEqual(len(data), 32)
         self._teardown(bsc)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_quick_query_readall_with_nonfatal_error_ignore(self, resource_group, location, storage_account,
                                                                  storage_account_key):
         # Arrange
@@ -731,7 +749,8 @@ class StorageQuickQueryTest(StorageTestCase):
         self.assertTrue(len(query_result) > 0)
         self._teardown(bsc)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_quick_query_iter_records_with_nonfatal_error_ignore(self, resource_group, location, storage_account,
                                                                  storage_account_key):
         # Arrange
@@ -767,7 +786,8 @@ class StorageQuickQueryTest(StorageTestCase):
         self.assertEqual(len(data), 32)
         self._teardown(bsc)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_quick_query_readall_with_json_serialization_setting(self, resource_group, location, storage_account,
                                                          storage_account_key):
         # Arrange
@@ -804,7 +824,8 @@ class StorageQuickQueryTest(StorageTestCase):
         self.assertEqual(query_result, b'{"name":"owner"};{};{"name":"owner"};')
         self._teardown(bsc)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_quick_query_iter_records_with_json_serialization_setting(self, resource_group, location, storage_account,
                                                                       storage_account_key):
         # Arrange
@@ -841,7 +862,8 @@ class StorageQuickQueryTest(StorageTestCase):
         self.assertEqual(listdata, [b'{"name":"owner"}',b'{}',b'{"name":"owner"}', b''])
         self._teardown(bsc)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_quick_query_with_only_input_json_serialization_setting(self, resource_group, location, storage_account,
                                                                     storage_account_key):
         # Arrange
@@ -878,7 +900,8 @@ class StorageQuickQueryTest(StorageTestCase):
         self.assertEqual(query_result, b'{"name":"owner"}\n{}\n{"name":"owner"}\n')
         self._teardown(bsc)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_quick_query_output_in_arrow_format(self, resource_group, location, storage_account,
                                                          storage_account_key):
         # Arrange
@@ -911,7 +934,8 @@ class StorageQuickQueryTest(StorageTestCase):
         self.assertEqual(query_result, expected_result)
         self._teardown(bsc)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_quick_query_input_in_arrow_format(self, resource_group, location, storage_account,
                                                storage_account_key):
         # Arrange

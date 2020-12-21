@@ -14,6 +14,7 @@ from azure.storage.blob import (
 )
 
 from azure.storage.blob._deserialize import deserialize_ors_policies
+from devtools_testutils import ResourceGroupPreparer, StorageAccountPreparer
 
 
 class StorageObjectReplicationTest(StorageTestCase):
@@ -48,7 +49,8 @@ class StorageObjectReplicationTest(StorageTestCase):
         self.assertEqual(result[1].rules[1].status, 'Failed' if result[1].rules[1].rule_id == '222' else 'Completed')
 
     @pytest.mark.playback_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_ors_source(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         bsc = BlobServiceClient(
@@ -77,7 +79,8 @@ class StorageObjectReplicationTest(StorageTestCase):
                          props.object_replication_source_properties)
 
     @pytest.mark.playback_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_ors_destination(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         bsc = BlobServiceClient(

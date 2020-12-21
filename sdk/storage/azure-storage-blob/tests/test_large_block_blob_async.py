@@ -100,7 +100,8 @@ class StorageLargeBlockBlobTestAsync(AsyncStorageTestCase):
 
     # --Test cases for block blobs --------------------------------------------
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_put_block_bytes_large_async(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
@@ -118,7 +119,8 @@ class StorageLargeBlockBlobTestAsync(AsyncStorageTestCase):
             # Assert
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_put_block_bytes_large_with_md5_async(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
@@ -137,7 +139,8 @@ class StorageLargeBlockBlobTestAsync(AsyncStorageTestCase):
             assert 'request_id' in resp
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_put_block_stream_large_async(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
@@ -159,7 +162,8 @@ class StorageLargeBlockBlobTestAsync(AsyncStorageTestCase):
             # Assert
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_put_block_stream_large_with_md5_async(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
@@ -182,7 +186,8 @@ class StorageLargeBlockBlobTestAsync(AsyncStorageTestCase):
         # Assert
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_create_large_blob_from_path_async(self, resource_group, location, storage_account, storage_account_key):
         # parallel tests introduce random order of requests, can only run live
@@ -207,7 +212,8 @@ class StorageLargeBlockBlobTestAsync(AsyncStorageTestCase):
             self._teardown(FILE_PATH)
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_create_large_blob_from_path_with_md5_async(self, resource_group, location, storage_account, storage_account_key):
         # parallel tests introduce random order of requests, can only run live
@@ -232,7 +238,8 @@ class StorageLargeBlockBlobTestAsync(AsyncStorageTestCase):
             self._teardown(FILE_PATH)
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_create_large_blob_from_path_non_parallel_async(self, resource_group, location, storage_account, storage_account_key):
 
@@ -256,7 +263,8 @@ class StorageLargeBlockBlobTestAsync(AsyncStorageTestCase):
             self._teardown(FILE_PATH)
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_create_large_blob_from_path_with_progress_async(self, resource_group, location, storage_account, storage_account_key):
         # parallel tests introduce random order of requests, can only run live
@@ -289,7 +297,8 @@ class StorageLargeBlockBlobTestAsync(AsyncStorageTestCase):
             self._teardown(FILE_PATH)
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_create_large_blob_from_path_with_properties_async(self, resource_group, location, storage_account, storage_account_key):
         # parallel tests introduce random order of requests, can only run live
@@ -320,7 +329,8 @@ class StorageLargeBlockBlobTestAsync(AsyncStorageTestCase):
             self._teardown(FILE_PATH)
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_creat_lrg_blob_frm_stream_chnkd_upload_async(self, resource_group, location, storage_account, storage_account_key):
         # parallel tests introduce random order of requests, can only run live
@@ -345,7 +355,8 @@ class StorageLargeBlockBlobTestAsync(AsyncStorageTestCase):
             self._teardown(FILE_PATH)
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_creat_lrgblob_frm_strm_w_prgrss_chnkduplod_async(self, resource_group, location, storage_account, storage_account_key):
         # parallel tests introduce random order of requests, can only run live
@@ -378,7 +389,8 @@ class StorageLargeBlockBlobTestAsync(AsyncStorageTestCase):
             self._teardown(FILE_PATH)
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_creat_lrgblob_frm_strm_chnkd_uplod_w_cnt_async(self, resource_group, location, storage_account, storage_account_key):
         # parallel tests introduce random order of requests, can only run live
@@ -404,7 +416,8 @@ class StorageLargeBlockBlobTestAsync(AsyncStorageTestCase):
             self._teardown(FILE_PATH)
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_creat_lrg_frm_stream_chnk_upload_w_cntnprops(self, resource_group, location, storage_account, storage_account_key):
         # parallel tests introduce random order of requests, can only run live
@@ -437,7 +450,8 @@ class StorageLargeBlockBlobTestAsync(AsyncStorageTestCase):
             self._teardown(FILE_PATH)
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_create_large_from_stream_chunk_upld_with_props(self, resource_group, location, storage_account, storage_account_key):
         # parallel tests introduce random order of requests, can only run live

@@ -18,6 +18,7 @@ from azure.storage.blob import (
     generate_blob_sas
 )
 from _shared.testcase import StorageTestCase, GlobalStorageAccountPreparer
+from devtools_testutils import ResourceGroupPreparer, StorageAccountPreparer
 
 # ------------------------------------------------------------------------------
 # The encryption scope are pre-created using management plane tool ArmClient.
@@ -83,7 +84,8 @@ class StorageCPKNTest(StorageTestCase):
     # -- Test cases for APIs supporting CPK ----------------------------------------------
 
     @pytest.mark.playback_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_put_block_and_put_block_list(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         bsc = BlobServiceClient(
@@ -123,7 +125,8 @@ class StorageCPKNTest(StorageTestCase):
 
     @pytest.mark.live_test_only
     @pytest.mark.playback_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_block_blob_with_chunks(self, resource_group, location, storage_account, storage_account_key):
         # parallel operation
         # test chunking functionality by reducing the size of each chunk,
@@ -163,7 +166,8 @@ class StorageCPKNTest(StorageTestCase):
 
     @pytest.mark.live_test_only
     @pytest.mark.playback_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_block_blob_with_sub_streams(self, resource_group, location, storage_account, storage_account_key):
         # problem with the recording framework can only run live
         # test chunking functionality by reducing the size of each chunk,
@@ -199,7 +203,8 @@ class StorageCPKNTest(StorageTestCase):
         self._teardown(bsc)
 
     @pytest.mark.playback_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_block_blob_with_single_chunk(self, resource_group, location, storage_account, storage_account_key):
         # Act
         # test chunking functionality by reducing the size of each chunk,
@@ -232,7 +237,8 @@ class StorageCPKNTest(StorageTestCase):
         self._teardown(bsc)
 
     @pytest.mark.playback_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_put_block_from_url_and_commit_with_cpk(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         # test chunking functionality by reducing the size of each chunk,
@@ -302,7 +308,8 @@ class StorageCPKNTest(StorageTestCase):
         self._teardown(bsc)
 
     @pytest.mark.playback_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_append_block(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         # test chunking functionality by reducing the size of each chunk,
@@ -335,7 +342,8 @@ class StorageCPKNTest(StorageTestCase):
         self._teardown(bsc)
 
     @pytest.mark.playback_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_append_block_from_url(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         # test chunking functionality by reducing the size of each chunk,
@@ -387,7 +395,8 @@ class StorageCPKNTest(StorageTestCase):
         self._teardown(bsc)
 
     @pytest.mark.playback_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_append_blob_with_chunks(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         # test chunking functionality by reducing the size of each chunk,
@@ -422,7 +431,8 @@ class StorageCPKNTest(StorageTestCase):
         self._teardown(bsc)
 
     @pytest.mark.playback_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_update_page(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         # test chunking functionality by reducing the size of each chunk,
@@ -460,7 +470,8 @@ class StorageCPKNTest(StorageTestCase):
         self._teardown(bsc)
 
     @pytest.mark.playback_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_update_page_from_url(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         # test chunking functionality by reducing the size of each chunk,
@@ -515,7 +526,8 @@ class StorageCPKNTest(StorageTestCase):
 
     @pytest.mark.live_test_only
     @pytest.mark.playback_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_page_blob_with_chunks(self, resource_group, location, storage_account, storage_account_key):
         # Act
         # test chunking functionality by reducing the size of each chunk,
@@ -550,7 +562,8 @@ class StorageCPKNTest(StorageTestCase):
         self._teardown(bsc)
 
     @pytest.mark.playback_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_get_set_blob_metadata(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         # test chunking functionality by reducing the size of each chunk,
@@ -593,7 +606,8 @@ class StorageCPKNTest(StorageTestCase):
         self._teardown(bsc)
 
     @pytest.mark.playback_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_snapshot_blob(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         # test chunking functionality by reducing the size of each chunk,
@@ -621,7 +635,8 @@ class StorageCPKNTest(StorageTestCase):
         self._teardown(bsc)
 
     @pytest.mark.playback_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_list_blobs(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         bsc = BlobServiceClient(
@@ -647,7 +662,8 @@ class StorageCPKNTest(StorageTestCase):
         self._teardown(bsc)
 
     @pytest.mark.playback_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_container_with_default_cpk_n(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         bsc = BlobServiceClient(
@@ -681,7 +697,8 @@ class StorageCPKNTest(StorageTestCase):
         container_client.delete_container()
 
     @pytest.mark.playback_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_container_with_default_cpk_n_deny_override(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         bsc = BlobServiceClient(

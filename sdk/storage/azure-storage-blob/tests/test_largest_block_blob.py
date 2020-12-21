@@ -20,6 +20,7 @@ from azure.storage.blob import (
 from azure.storage.blob._shared.base_client import _format_shared_key_credential
 
 from _shared.testcase import StorageTestCase, GlobalStorageAccountPreparer
+from devtools_testutils import ResourceGroupPreparer, StorageAccountPreparer
 
 # ------------------------------------------------------------------------------
 TEST_BLOB_PREFIX = 'largestblob'
@@ -67,7 +68,8 @@ class StorageLargestBlockBlobTest(StorageTestCase):
     # --Test cases for block blobs --------------------------------------------
     @pytest.mark.live_test_only
     @pytest.mark.skip(reason="This takes really long time")
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_put_block_bytes_largest(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         blob = self._create_blob()
@@ -94,7 +96,8 @@ class StorageLargestBlockBlobTest(StorageTestCase):
         self.assertEqual(block_list[0][0].size, LARGEST_BLOCK_SIZE)
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_put_block_bytes_largest_without_network(self, resource_group, location, storage_account, storage_account_key):
         payload_dropping_policy = PayloadDroppingPolicy()
         credential_policy = _format_shared_key_credential(storage_account.name, storage_account_key)
@@ -125,7 +128,8 @@ class StorageLargestBlockBlobTest(StorageTestCase):
 
     @pytest.mark.live_test_only
     @pytest.mark.skip(reason="This takes really long time")
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_put_block_stream_largest(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         blob = self._create_blob()
@@ -154,7 +158,8 @@ class StorageLargestBlockBlobTest(StorageTestCase):
         self.assertEqual(block_list[0][0].size, LARGEST_BLOCK_SIZE)
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_put_block_stream_largest_without_network(self, resource_group, location, storage_account, storage_account_key):
         payload_dropping_policy = PayloadDroppingPolicy()
         credential_policy = _format_shared_key_credential(storage_account.name, storage_account_key)
@@ -187,7 +192,8 @@ class StorageLargestBlockBlobTest(StorageTestCase):
 
     @pytest.mark.live_test_only
     @pytest.mark.skip(reason="This takes really long time")
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_largest_blob_from_path(self, resource_group, location, storage_account, storage_account_key):
         self._setup(storage_account, storage_account_key)
         blob_name = self._get_blob_reference()
@@ -208,7 +214,8 @@ class StorageLargestBlockBlobTest(StorageTestCase):
         self._teardown(FILE_PATH)
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_largest_blob_from_path_without_network(self, resource_group, location, storage_account, storage_account_key):
         payload_dropping_policy = PayloadDroppingPolicy()
         credential_policy = _format_shared_key_credential(storage_account.name, storage_account_key)
@@ -234,7 +241,8 @@ class StorageLargestBlockBlobTest(StorageTestCase):
 
     @pytest.mark.skip(reason="This takes really long time")
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_largest_blob_from_stream_without_network(self, resource_group, location, storage_account, storage_account_key):
         payload_dropping_policy = PayloadDroppingPolicy()
         credential_policy = _format_shared_key_credential(storage_account.name, storage_account_key)
@@ -254,7 +262,8 @@ class StorageLargestBlockBlobTest(StorageTestCase):
         self.assertEqual(payload_dropping_policy.put_block_sizes[0], LARGEST_BLOCK_SIZE)
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_largest_blob_from_stream_single_upload_without_network(self, resource_group, location, storage_account, storage_account_key):
         payload_dropping_policy = PayloadDroppingPolicy()
         credential_policy = _format_shared_key_credential(storage_account.name, storage_account_key)

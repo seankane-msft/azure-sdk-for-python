@@ -9,6 +9,7 @@ import pytest
 from azure.core.pipeline.transport import AioHttpTransport
 from multidict import CIMultiDict, CIMultiDictProxy
 
+from devtools_testutils import ResourceGroupPreparer, StorageAccountPreparer
 from _shared.asynctestcase import AsyncStorageTestCase
 from _shared.testcase import StorageTestCase, GlobalStorageAccountPreparer
 from azure.storage.blob import BlobProperties
@@ -38,7 +39,8 @@ class StorageObjectReplicationTest(StorageTestCase):
     # TODO use generated account and set OR policy dynamically
 
     @pytest.mark.playback_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_ors_source(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
@@ -69,7 +71,8 @@ class StorageObjectReplicationTest(StorageTestCase):
                          props.object_replication_source_properties)
 
     @pytest.mark.playback_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_ors_destination(self, resource_group, location, storage_account, storage_account_key):
         # Arrange

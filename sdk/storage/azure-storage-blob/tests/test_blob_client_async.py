@@ -19,6 +19,7 @@ from azure.core.pipeline.transport import AioHttpTransport
 from multidict import CIMultiDict, CIMultiDictProxy
 from _shared.testcase import GlobalStorageAccountPreparer
 from _shared.asynctestcase import AsyncStorageTestCase
+from devtools_testutils import ResourceGroupPreparer, StorageAccountPreparer
 
 # ------------------------------------------------------------------------------
 SERVICES = {
@@ -59,7 +60,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
         self.assertTrue('{}-secondary.{}.core.windows.net'.format(account_name, url_type) in service.secondary_endpoint)
 
     # --Direct Parameters Test Cases --------------------------------------------
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_service_with_key_async(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
 
@@ -72,7 +74,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
             self.validate_standard_account_endpoints(service, url, storage_account.name, storage_account_key)
             self.assertEqual(service.scheme, 'https')
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_service_with_connection_string_async(self, resource_group, location, storage_account, storage_account_key):
 
         for service_type in SERVICES.items():
@@ -84,7 +87,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
             self.validate_standard_account_endpoints(service, service_type[1], storage_account.name, storage_account_key)
             self.assertEqual(service.scheme, 'https')
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_service_with_sas_async(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
 
@@ -100,7 +104,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
             self.assertTrue(service.url.endswith(self.sas_token))
             self.assertIsNone(service.credential)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_service_with_token_async(self, resource_group, location, storage_account, storage_account_key):
         for service_type in SERVICES:
             # Act
@@ -113,7 +118,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
             self.assertEqual(service.credential, self.token_credential)
             self.assertEqual(service.account_name, storage_account.name)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_service_with_token_and_http_async(self, resource_group, location, storage_account, storage_account_key):
         for service_type in SERVICES:
             # Act
@@ -121,7 +127,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
                 url = self.account_url(storage_account, "blob").replace('https', 'http')
                 service_type(url, credential=self.token_credential, container_name='foo', blob_name='bar')
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_service_china_async(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
 
@@ -141,7 +148,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
             self.assertTrue(service.secondary_endpoint.startswith(
                 'https://{}-secondary.{}.core.chinacloudapi.cn'.format(storage_account.name, service_type[1])))
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_service_protocol_async(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
 
@@ -155,7 +163,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
             self.validate_standard_account_endpoints(service, service_type[1], storage_account.name, storage_account_key)
             self.assertEqual(service.scheme, 'http')
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_blob_service_anonymous_async(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         BLOB_SERVICES = [BlobServiceClient, ContainerClient, BlobClient]
@@ -170,7 +179,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
             self.assertIsNone(service.credential)
             self.assertEqual(service.account_name, storage_account.name)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_blob_service_custom_domain_async(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         BLOB_SERVICES = [BlobServiceClient, ContainerClient, BlobClient]
@@ -191,7 +201,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
             self.assertTrue(service.primary_endpoint.startswith('https://www.mydomain.com/'))
             self.assertTrue(service.secondary_endpoint.startswith('https://' + storage_account.name + '-secondary.blob.core.windows.net'))
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_service_with_socket_timeout_async(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
 
@@ -210,7 +221,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
             assert default_service._client._client._pipeline._transport.connection_config.timeout in [20, (20, 2000)]
 
     # --Connection String Test Cases --------------------------------------------
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_service_with_connection_string_key_async(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         conn_string = 'AccountName={};AccountKey={};'.format(storage_account.name, storage_account_key)
@@ -224,7 +236,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
             self.validate_standard_account_endpoints(service, service_type[1], storage_account.name, storage_account_key)
             self.assertEqual(service.scheme, 'https')
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_service_with_connection_string_sas_async(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         conn_string = 'AccountName={};SharedAccessSignature={};'.format(storage_account.name, self.sas_token)
@@ -241,7 +254,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
             self.assertIsNone(service.credential)
             self.assertEqual(service.account_name, storage_account.name)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_blob_client_with_complete_blob_url_async(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         blob_url = self.account_url(storage_account, "blob") + "/foourl/barurl"
@@ -253,7 +267,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
         self.assertEqual(service.blob_name, 'bar')
         self.assertEqual(service.account_name, storage_account.name)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_creat_serv_w_connstr_endpoint_protocol_async(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         conn_string = 'AccountName={};AccountKey={};DefaultEndpointsProtocol=http;EndpointSuffix=core.chinacloudapi.cn;'.format(
@@ -276,7 +291,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
                     'http://{}-secondary.{}.core.chinacloudapi.cn'.format(storage_account.name, service_type[1])))
             self.assertEqual(service.scheme, 'http')
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_service_with_connection_string_emulated_async(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         for service_type in SERVICES.items():
@@ -286,7 +302,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
             with self.assertRaises(ValueError):
                 service = service_type[0].from_connection_string(conn_string, container_name="foo", blob_name="bar")
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_create_service_with_connection_string_anonymous_async(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         for service_type in SERVICES.items():
@@ -303,7 +320,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
         with self.assertRaises(ValueError):
             service.secondary_endpoint
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_creat_serv_w_connstr_custm_domain_async(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         for service_type in SERVICES.items():
@@ -321,7 +339,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
             self.assertTrue(service.primary_endpoint.startswith('https://www.mydomain.com/'))
             self.assertTrue(service.secondary_endpoint.startswith('https://' + storage_account.name + '-secondary.blob.core.windows.net'))
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_creat_serv_w_connstr_custm_dom_trailing_slash_async(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         for service_type in SERVICES.items():
@@ -339,7 +358,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
             self.assertTrue(service.primary_endpoint.startswith('https://www.mydomain.com/'))
             self.assertTrue(service.secondary_endpoint.startswith('https://' + storage_account.name + '-secondary.blob.core.windows.net'))
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_creat_serv_w_connstr_custm_dom_2ndry_override_async(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
         for service_type in SERVICES.items():
@@ -358,7 +378,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
             self.assertTrue(service.primary_endpoint.startswith('https://www.mydomain.com/'))
             self.assertTrue(service.secondary_endpoint.startswith('https://www-sec.mydomain.com/'))
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_creat_serv_w_connstr_fail_if_2ndry_wo_primary_async(self, resource_group, location, storage_account, storage_account_key):
         for service_type in SERVICES.items():
             # Arrange
@@ -372,7 +393,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
             with self.assertRaises(ValueError):
                 service = service_type[0].from_connection_string(conn_string, container_name="foo", blob_name="bar")
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     def test_creat_serv_w_connstr_pass_if_2ndry_w_primary_async(self, resource_group, location, storage_account, storage_account_key):
         for service_type in SERVICES.items():
             # Arrange
@@ -460,7 +482,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
         self.assertEqual(blob_client.container_name, "containername")
         self.assertEqual(blob_client.blob_name, "dir1/sub000/2010_Unit150_Ivan097_img0003.jpg")
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_request_callback_signed_header_async(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
@@ -480,7 +503,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
         finally:
             await service.delete_container(name)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_response_callback_async(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
@@ -497,7 +521,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
         exists = await container.get_container_properties(raw_response_hook=callback)
         self.assertTrue(exists)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_user_agent_default_async(self, resource_group, location, storage_account, storage_account_key):
         service = BlobServiceClient(self.account_url(storage_account, "blob"), credential=storage_account_key, transport=AiohttpTestTransport())
@@ -508,7 +533,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
 
         await service.get_service_properties(raw_response_hook=callback)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_user_agent_custom_async(self, resource_group, location, storage_account, storage_account_key):
         custom_app = "TestApp/v1.0"
@@ -533,7 +559,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
 
         await service.get_service_properties(raw_response_hook=callback, user_agent="TestApp/v2.0")
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_user_agent_append_async(self, resource_group, location, storage_account, storage_account_key):
         service = BlobServiceClient(self.account_url(storage_account, "blob"), credential=storage_account_key, transport=AiohttpTestTransport())
@@ -547,7 +574,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
 
         await service.get_service_properties(raw_response_hook=callback, user_agent='customer_user_agent')
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_closing_pipeline_client(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
@@ -562,7 +590,8 @@ class StorageClientTestAsync(AsyncStorageTestCase):
                 assert hasattr(service, 'close')
                 await service.close()
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_closing_pipeline_client_simple(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
@@ -572,5 +601,5 @@ class StorageClientTestAsync(AsyncStorageTestCase):
             service = client(
                 self.account_url(storage_account, "blob"), credential=storage_account_key, container_name='foo', blob_name='bar')
             await service.close()
-                
+
 # ------------------------------------------------------------------------------

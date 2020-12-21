@@ -45,7 +45,7 @@ class ServiceStatsTest(StorageTestCase):
         response.http_response.text = lambda encoding=None: SERVICE_UNAVAILABLE_RESP_BODY
 
     # --Test cases per service ---------------------------------------
-    @GlobalResourceGroupPreparer()
+    @ResourceGroupPreparer()
     @StorageAccountPreparer(random_name_enabled=True, name_prefix='pyacrstorage', sku='Standard_RAGRS')
     def test_blob_service_stats(self, resource_group, location, storage_account, storage_account_key):
         # Arrange
@@ -57,7 +57,7 @@ class ServiceStatsTest(StorageTestCase):
         # Assert
         self._assert_stats_default(stats)
 
-    @GlobalResourceGroupPreparer()
+    @ResourceGroupPreparer()
     @StorageAccountPreparer(random_name_enabled=True, name_prefix='pyacrstorage', sku='Standard_RAGRS')
     def test_blob_service_stats_when_unavailable(self, resource_group, location, storage_account, storage_account_key):
         # Arrange

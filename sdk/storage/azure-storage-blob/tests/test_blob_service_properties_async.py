@@ -30,6 +30,7 @@ from azure.storage.blob import (
 )
 from _shared.testcase import GlobalStorageAccountPreparer
 from _shared.asynctestcase import AsyncStorageTestCase
+from devtools_testutils import ResourceGroupPreparer, StorageAccountPreparer
 
 
 # ------------------------------------------------------------------------------
@@ -121,14 +122,16 @@ class ServicePropertiesTestAsync(AsyncStorageTestCase):
         self.assertEqual(ret1.days, ret2.days)
 
     # --Test cases per service ---------------------------------------
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_empty_set_service_properties_exception(self, resource_group, location, storage_account, storage_account_key):
         bsc = BlobServiceClient(self.account_url(storage_account, "blob"), credential=storage_account_key, transport=AiohttpTestTransport())
         with self.assertRaises(ValueError):
             await bsc.set_service_properties()
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_blob_service_properties(self, resource_group, location, storage_account, storage_account_key):
         bsc = BlobServiceClient(self.account_url(storage_account, "blob"), credential=storage_account_key, transport=AiohttpTestTransport())
@@ -149,7 +152,8 @@ class ServicePropertiesTestAsync(AsyncStorageTestCase):
         self.assertEqual('2014-02-14', props['target_version'])
 
     # --Test cases per feature ---------------------------------------
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_set_default_service_version(self, resource_group, location, storage_account, storage_account_key):
         bsc = BlobServiceClient(self.account_url(storage_account, "blob"), credential=storage_account_key, transport=AiohttpTestTransport())
@@ -161,7 +165,8 @@ class ServicePropertiesTestAsync(AsyncStorageTestCase):
         received_props = await bsc.get_service_properties()
         self.assertEqual(received_props['target_version'], '2014-02-14')
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_set_delete_retention_policy(self, resource_group, location, storage_account, storage_account_key):
         bsc = BlobServiceClient(self.account_url(storage_account, "blob"), credential=storage_account_key, transport=AiohttpTestTransport())
@@ -174,7 +179,8 @@ class ServicePropertiesTestAsync(AsyncStorageTestCase):
         received_props = await bsc.get_service_properties()
         self._assert_delete_retention_policy_equal(received_props['delete_retention_policy'], delete_retention_policy)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_set_delete_retention_policy_edge_cases(self, resource_group, location, storage_account, storage_account_key):
         # Should work with minimum settings
@@ -215,7 +221,8 @@ class ServicePropertiesTestAsync(AsyncStorageTestCase):
         received_props = await bsc.get_service_properties()
         self._assert_delete_retention_policy_not_equal(received_props['delete_retention_policy'], delete_retention_policy)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_set_disabled_delete_retention_policy(self, resource_group, location, storage_account, storage_account_key):
         bsc = BlobServiceClient(self.account_url(storage_account, "blob"), credential=storage_account_key, transport=AiohttpTestTransport())
@@ -228,7 +235,8 @@ class ServicePropertiesTestAsync(AsyncStorageTestCase):
         received_props = await bsc.get_service_properties()
         self._assert_delete_retention_policy_equal(received_props['delete_retention_policy'], delete_retention_policy)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_set_static_website_properties(self, resource_group, location, storage_account, storage_account_key):
         bsc = BlobServiceClient(self.account_url(storage_account, "blob"), credential=storage_account_key, transport=AiohttpTestTransport())
@@ -244,7 +252,8 @@ class ServicePropertiesTestAsync(AsyncStorageTestCase):
         received_props = await bsc.get_service_properties()
         self._assert_static_website_equal(received_props['static_website'], static_website)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_set_static_website_properties_with_default_index_document_path(self, resource_group, location, storage_account, storage_account_key):
         bsc = BlobServiceClient(self.account_url(storage_account, "blob"), credential=storage_account_key, transport=AiohttpTestTransport())
@@ -260,7 +269,8 @@ class ServicePropertiesTestAsync(AsyncStorageTestCase):
         received_props = await bsc.get_service_properties()
         self._assert_static_website_equal(received_props['static_website'], static_website)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_set_static_web_props_missing_field(self, resource_group, location, storage_account, storage_account_key):
         # Case1: Arrange both missing
@@ -295,7 +305,8 @@ class ServicePropertiesTestAsync(AsyncStorageTestCase):
         received_props = await bsc.get_service_properties()
         self._assert_static_website_equal(received_props['static_website'], static_website)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_disabled_static_website_properties(self, resource_group, location, storage_account, storage_account_key):
         bsc = BlobServiceClient(self.account_url(storage_account, "blob"), credential=storage_account_key, transport=AiohttpTestTransport())
@@ -309,7 +320,8 @@ class ServicePropertiesTestAsync(AsyncStorageTestCase):
         received_props = await bsc.get_service_properties()
         self._assert_static_website_equal(received_props['static_website'], StaticWebsite(enabled=False))
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_set_static_webprops_no_impact_other_props(self, resource_group, location, storage_account, storage_account_key):
         bsc = BlobServiceClient(self.account_url(storage_account, "blob"), credential=storage_account_key, transport=AiohttpTestTransport())
@@ -348,7 +360,8 @@ class ServicePropertiesTestAsync(AsyncStorageTestCase):
         self._assert_static_website_equal(received_props['static_website'], static_website)
         self._assert_cors_equal(received_props['cors'], cors)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_set_logging(self, resource_group, location, storage_account, storage_account_key):
         bsc = BlobServiceClient(self.account_url(storage_account, "blob"), credential=storage_account_key, transport=AiohttpTestTransport())
@@ -361,7 +374,8 @@ class ServicePropertiesTestAsync(AsyncStorageTestCase):
         received_props = await bsc.get_service_properties()
         self._assert_logging_equal(received_props['analytics_logging'], logging)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_set_hour_metrics(self, resource_group, location, storage_account, storage_account_key):
         bsc = BlobServiceClient(self.account_url(storage_account, "blob"), credential=storage_account_key, transport=AiohttpTestTransport())
@@ -374,7 +388,8 @@ class ServicePropertiesTestAsync(AsyncStorageTestCase):
         received_props = await bsc.get_service_properties()
         self._assert_metrics_equal(received_props['hour_metrics'], hour_metrics)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_set_minute_metrics(self, resource_group, location, storage_account, storage_account_key):
         bsc = BlobServiceClient(self.account_url(storage_account, "blob"), credential=storage_account_key, transport=AiohttpTestTransport())
@@ -388,7 +403,8 @@ class ServicePropertiesTestAsync(AsyncStorageTestCase):
         received_props = await bsc.get_service_properties()
         self._assert_metrics_equal(received_props['minute_metrics'], minute_metrics)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_set_cors(self, resource_group, location, storage_account, storage_account_key):
         bsc = BlobServiceClient(self.account_url(storage_account, "blob"), credential=storage_account_key, transport=AiohttpTestTransport())
@@ -415,7 +431,8 @@ class ServicePropertiesTestAsync(AsyncStorageTestCase):
         received_props = await bsc.get_service_properties()
         self._assert_cors_equal(received_props['cors'], cors)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_retention_no_days(self, resource_group, location, storage_account, storage_account_key):
         # Assert
@@ -423,7 +440,8 @@ class ServicePropertiesTestAsync(AsyncStorageTestCase):
                           RetentionPolicy,
                           True, None)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_too_many_cors_rules(self, resource_group, location, storage_account, storage_account_key):
         bsc = BlobServiceClient(self.account_url(storage_account, "blob"), credential=storage_account_key, transport=AiohttpTestTransport())
@@ -435,7 +453,8 @@ class ServicePropertiesTestAsync(AsyncStorageTestCase):
         with self.assertRaises(HttpResponseError):
             await bsc.set_service_properties(None, None, None, cors)
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_retention_too_long(self, resource_group, location, storage_account, storage_account_key):
         bsc = BlobServiceClient(self.account_url(storage_account, "blob"), credential=storage_account_key, transport=AiohttpTestTransport())

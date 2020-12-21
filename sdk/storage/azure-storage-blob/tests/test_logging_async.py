@@ -83,7 +83,8 @@ class StorageLoggingTestAsync(AsyncStorageTestCase):
             except:
                 pass
 
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_authorization_is_scrubbed_off(self, resource_group, location, storage_account, storage_account_key):
         bsc = BlobServiceClient(self.account_url(storage_account, "blob"), storage_account_key, transport=AiohttpTestTransport())
@@ -101,7 +102,8 @@ class StorageLoggingTestAsync(AsyncStorageTestCase):
             self.assertFalse('SharedKey' in log_as_str)
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_sas_signature_is_scrubbed_off(self, resource_group, location, storage_account, storage_account_key):
         # Test can only run live
@@ -134,7 +136,8 @@ class StorageLoggingTestAsync(AsyncStorageTestCase):
             self.assertFalse(signed_signature in log_as_str)
 
     @pytest.mark.live_test_only
-    @GlobalStorageAccountPreparer()
+    @ResourceGroupPreparer(name_prefix="storageblob")
+    @StorageAccountPreparer(name_prefix="storageblob")
     @AsyncStorageTestCase.await_prepared_test
     async def test_copy_source_sas_is_scrubbed_off(self, resource_group, location, storage_account, storage_account_key):
         # Test can only run live
