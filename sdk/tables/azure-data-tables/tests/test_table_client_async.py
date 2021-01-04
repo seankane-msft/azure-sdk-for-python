@@ -8,9 +8,11 @@ import platform
 
 from azure.data.tables.aio import TableServiceClient, TableClient
 from azure.data.tables._version import VERSION
+from devtools_testutils import AzureTestCase
 
 from _shared.testcase import TableTestCase
 from preparers import TablesPreparer
+
 # ------------------------------------------------------------------------------
 SERVICES = {
     TableServiceClient: 'table',
@@ -436,6 +438,7 @@ class StorageTableClientTest(TableTestCase):
         assert service.table_name ==  'bar'
         assert service.account_name ==  tables_storage_account_name
 
+    @AzureTestCase.await_prepared_test
     async def test_create_table_client_with_invalid_name_async(self):
         # Arrange
         table_url = "https://{}.table.core.windows.net:443/foo".format("storage_account_name")
@@ -447,9 +450,9 @@ class StorageTableClientTest(TableTestCase):
 
         assert "Table names must be alphanumeric, cannot begin with a number, and must be between 3-63 characters long."in str(excinfo)
 
+    @AzureTestCase.await_prepared_test
     async def test_error_with_malformed_conn_str_async(self):
         # Arrange
-
         for conn_str in ["", "foobar", "foobar=baz=foo", "foo;bar;baz", "foo=;bar=;", "=", ";", "=;=="]:
             for service_type in SERVICES.items():
                 # Act

@@ -126,6 +126,10 @@ class ReplayableTest(IntegrationTestBase):  # pylint: disable=too-many-instance-
         if self.is_live and os.path.exists(self.recording_file):
             os.remove(self.recording_file)
 
+        if not self.is_live and not os.path.exists(self.recording_file):
+            print("Recording file {} not found for test".format(self.recording_file))
+            # raise Exception("Recording file {} not found for test".format(self.recording_file))
+
         self.in_recording = self.is_live or not os.path.exists(self.recording_file)
         self.test_resources_count = 0
         self.original_env = os.environ.copy()
