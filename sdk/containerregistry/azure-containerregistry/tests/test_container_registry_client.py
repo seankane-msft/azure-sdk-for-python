@@ -4,9 +4,9 @@
 # Licensed under the MIT License.
 # ------------------------------------
 from datetime import datetime
+import os
 import pytest
 import six
-import time
 
 from azure.containerregistry import (
     RepositoryProperties,
@@ -572,3 +572,28 @@ class TestContainerRegistryClient(ContainerRegistryTestClass):
 
         with pytest.raises(ClientAuthenticationError):
             properties = client.get_repository_properties(HELLO_WORLD)
+
+    @pytest.mark.live_test_only
+    @acr_preparer()
+    def test_foreign_authentication_scope(self):
+        from azure.identity import DefaultAzureCredential, AzureAuthorityHosts
+        from azure.containerregistry import ContainerRegistryClient
+
+        client = ContainerRegistryClient(
+            os.environ.get("CONTAINERREGISTRY_GOV_ENDPOINT"),
+            DefaultAzureCredential(
+                client_id=os.environ.get("CONTAINERREGISTRY_GOV_CLIENT_ID"),
+                client_secret=os.environ.get("CONTAINERREGISTRY_GOV_CLIENT_SECRET"),
+                tenant_id=os.environ.get("CONTAINERREGISTRY_GOV_TENANT_ID"),
+                authority=AzureAuthorityHosts.AZURE_GOVERNMENT
+            ),
+            authentication_scope="https://management.usgovcloudapi.net/.default"
+        )
+
+        count = 0
+        for name in client.list_repository_names():
+            assert isinstance(name, six.string_types)
+            print(name)
+            count += 1
+
+        assert count > 0
